@@ -25,9 +25,11 @@ public class PageController {
     @GetMapping("/news/minutes")   public String newsMinutes()   { return "news/minutes"; }
     @GetMapping("/news/clubs")     public String newsClubs()     { return "news/clubs"; }
 
-    @GetMapping("/info/rules")     public String infoRules()     { return "info/rules"; }
-    @GetMapping("/info/forms")     public String infoForms()     { return "info/forms"; }
-    @GetMapping("/info/penalty")   public String infoPenalty()   { return "info/penalty"; }
+    @GetMapping("/info/rules")         public String infoRules()        { return "info/rules"; }
+    @GetMapping("/info/forms")         public String infoForms()        { return "info/forms"; }
+    @GetMapping("/info/activity-cert") public String infoActivityCert() { return "info/activity-cert"; }
+    @GetMapping("/info/club-cert")     public String infoClubCert()     { return "info/club-cert"; }
+    @GetMapping("/info/penalty")       public String infoPenalty()      { return "info/penalty"; }
 
     @GetMapping("/election/intro")    public String electionIntro()    { return "election/intro"; }
     @GetMapping("/election/announce") public String electionAnnounce() { return "election/announce"; }

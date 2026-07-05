@@ -47,5 +47,47 @@
   </div>
 </div>
 
+<div th:fragment="info(active)">
+  <div class="section-header">
+    <h1>정보마당</h1>
+    <p>동아리 활동에 필요한 정보와 양식을 확인하세요</p>
+  </div>
+  <div class="sub-nav">
+    <div class="sub-nav-inner">
+      <a href="/info/rules" class="sub-nav-link" th:classappend="${active == 'rules'} ? 'active' : ''">규칙</a>
+      <a href="/info/forms" class="sub-nav-link" th:classappend="${active == 'forms'} ? 'active' : ''">양식 및 가이드라인</a>
+      <a href="/info/activity-cert" class="sub-nav-link" th:classappend="${active == 'activity-cert'} ? 'active' : ''">활동증명서</a>
+      <a href="/info/club-cert" class="sub-nav-link" th:classappend="${active == 'club-cert'} ? 'active' : ''">동아리증명서</a>
+      <a href="/info/penalty" class="sub-nav-link" th:classappend="${active == 'penalty'} ? 'active' : ''">벌점 현황</a>
+    </div>
+  </div>
+</div>
+
+<div th:fragment="election(active)">
+  <div class="section-header">
+    <h1>동아리선거관리위원회</h1>
+    <p>공정하고 투명한 선거를 위해 운영됩니다</p>
+  </div>
+  <div class="sub-nav">
+    <div class="sub-nav-inner">
+      <a href="/election/intro" class="sub-nav-link" th:classappend="${active == 'intro'} ? 'active' : ''">소개</a>
+      <a href="/election/announce" class="sub-nav-link" th:classappend="${active == 'announce'} ? 'active' : ''">공고</a>
+    </div>
+  </div>
+</div>
+
+<div th:fragment="contact(active)">
+  <div class="section-header">
+    <h1>문의사항</h1>
+    <p>궁금한 점이 있으시면 언제든지 문의해주세요</p>
+  </div>
+  <div class="sub-nav">
+    <div class="sub-nav-inner">
+      <a href="/contact/faq" class="sub-nav-link" th:classappend="${active == 'faq'} ? 'active' : ''">자주 묻는 질문</a>
+      <a href="/contact/ask" class="sub-nav-link" th:classappend="${active == 'ask'} ? 'active' : ''">질문 있어요</a>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

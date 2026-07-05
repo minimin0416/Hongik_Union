@@ -1,27 +1,34 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: head('양식')}"></head>
-<body class="bg-gray-100 min-h-screen">
+<head th:replace="~{fragments/head :: head('양식 및 가이드라인')}"></head>
+<body class="min-h-screen" style="background:#e8e8e8">
 <div th:replace="~{fragments/nav :: nav}"></div>
-<main class="max-w-4xl mx-auto px-6 py-10">
-  <h1 class="text-2xl font-black text-gray-900 mb-6">양식</h1>
-  <div class="bg-white rounded-xl shadow-sm overflow-hidden" id="forms-list"></div>
-</main>
+<div th:replace="~{fragments/subheader :: info('forms')}"></div>
+<div class="page-content">
+  <h2 class="text-2xl font-bold text-gray-800 mb-2">양식 및 가이드라인</h2>
+  <p class="text-gray-500 text-sm mb-6">아래 양식을 다운로드하여 작성 후 제출해주세요.</p>
+  <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <table class="data-table">
+      <thead><tr><th>양식명</th><th class="hidden md:table-cell">설명</th><th class="w-16 text-center">형식</th><th class="w-24 text-center">업데이트</th><th class="w-24 text-center">다운로드</th></tr></thead>
+      <tbody id="forms-rows"></tbody>
+    </table>
+  </div>
+</div>
 <footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
   await Store.initNav();
   const forms = await Store.getForms();
-  const el = document.getElementById('forms-list');
-  el.innerHTML = forms.length ? forms.map((f,i)=>`
-    <div class="flex items-center gap-4 px-5 py-4 ${i<forms.length-1?'border-b border-gray-100':''}">
-      <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-xs font-bold flex-shrink-0">${f.fileType}</div>
-      <div class="flex-1">
-        <div class="font-medium text-gray-800">${f.name}</div>
-        <div class="text-xs text-gray-400 mt-0.5">${f.description} · ${f.updatedAt}</div>
-      </div>
-      ${f.attachment?`<a href="${f.attachment.url}" download="${f.attachment.name}" class="px-3 py-1.5 bg-gray-900 text-white text-xs rounded-lg hover:bg-gray-700 transition-colors">다운로드</a>`:'<span class="text-xs text-gray-400">파일 없음</span>'}
-    </div>`).join('') : '<div class="p-12 text-center text-gray-400">양식이 없습니다</div>';
+  const rows = document.getElementById('forms-rows');
+  rows.innerHTML = forms.length ? forms.map(f => `
+    <tr>
+      <td class="font-medium text-gray-800">${f.name}</td>
+      <td class="text-gray-500 text-sm hidden md:table-cell">${f.description||''}</td>
+      <td class="text-center"><span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-mono">${f.fileType||''}</span></td>
+      <td class="text-center text-gray-400 text-sm">${f.updatedAt||''}</td>
+      <td class="text-center">${f.attachment ? `<button class="dl-btn text-xs text-blue-600 hover:underline font-medium" data-url="${f.attachment.url}" data-name="${f.attachment.name}">📎 다운로드</button>` : '<span class="text-xs text-gray-300">준비 중</span>'}</td>
+    </tr>`).join('') : '<tr><td colspan="5" class="text-center text-gray-400 py-10">등록된 양식이 없습니다</td></tr>';
+  rows.querySelectorAll('.dl-btn').forEach(btn => btn.addEventListener('click', () => Store.downloadFile(btn.dataset.url, btn.dataset.name)));
 });
 </script>
 </body>

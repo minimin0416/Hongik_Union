@@ -1,31 +1,56 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('선거 공고')}"></head>
-<body class="bg-gray-100 min-h-screen">
+<body class="min-h-screen" style="background:#e8e8e8">
 <div th:replace="~{fragments/nav :: nav}"></div>
-<main class="max-w-4xl mx-auto px-6 py-10">
-  <h1 class="text-2xl font-black text-gray-900 mb-6">선거 공고</h1>
-  <div class="space-y-4" id="election-list"></div>
-</main>
+<div th:replace="~{fragments/subheader :: election('announce')}"></div>
+<div class="page-content">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">공고</h2>
+  <div id="announce-body"></div>
+</div>
 <footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
 <script>
-const STATUS_COLOR = { '예정':'bg-blue-100 text-blue-700', '진행중':'bg-green-100 text-green-700', '완료':'bg-gray-100 text-gray-600' };
+const STATUS_COLOR = { '예정':'bg-blue-100 text-blue-700', '진행중':'bg-green-100 text-green-700', '완료':'bg-gray-100 text-gray-500' };
+let announcements = [];
+
+function showList() {
+  document.getElementById('announce-body').innerHTML = `
+    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+      <table class="data-table">
+        <thead><tr><th>공고 제목</th><th class="w-20 text-center">상태</th><th class="w-28 text-center hidden md:table-cell">날짜</th></tr></thead>
+        <tbody id="announce-rows"></tbody>
+      </table>
+    </div>`;
+  const rows = document.getElementById('announce-rows');
+  rows.innerHTML = announcements.length ? announcements.map(a => `
+    <tr class="cursor-pointer hover:bg-blue-50" data-id="${a.id}">
+      <td class="font-medium text-gray-800">${a.title}${a.attachment ? '<span class="ml-2 text-xs text-blue-400">📎</span>' : ''}</td>
+      <td class="text-center"><span class="text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLOR[a.status]||'bg-gray-100 text-gray-600'}">${a.status}</span></td>
+      <td class="text-center text-gray-400 text-xs hidden md:table-cell">${a.date}</td>
+    </tr>`).join('') : '<tr><td colspan="3" class="text-center text-gray-400 py-10">등록된 공고가 없습니다</td></tr>';
+  rows.querySelectorAll('tr[data-id]').forEach(tr => tr.addEventListener('click', () => showDetail(announcements.find(a => a.id === tr.dataset.id))));
+}
+
+function showDetail(a) {
+  document.getElementById('announce-body').innerHTML = `
+    <div class="bg-white rounded-xl border border-gray-200 p-6">
+      <button id="back-btn" class="text-sm text-gray-500 hover:text-gray-800 mb-4 flex items-center gap-1">← 목록으로</button>
+      <div class="flex items-center gap-2 mb-2">
+        <span class="text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLOR[a.status]||'bg-gray-100 text-gray-600'}">${a.status}</span>
+        <h3 class="text-xl font-bold text-gray-800">${a.title}</h3>
+      </div>
+      <p class="text-sm text-gray-400 mb-4">${a.date}</p>
+      ${a.attachment ? `<button id="att-dl" class="flex items-center gap-1.5 text-sm text-blue-600 hover:underline mb-4">📎 ${a.attachment.name}</button>` : ''}
+      <div class="border-t border-gray-100 pt-4 text-gray-700 text-sm leading-relaxed whitespace-pre-wrap">${a.content || '내용이 없습니다.'}</div>
+    </div>`;
+  document.getElementById('back-btn').addEventListener('click', showList);
+  if (a.attachment) document.getElementById('att-dl').addEventListener('click', () => Store.downloadFile(a.attachment.url, a.attachment.name));
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   await Store.initNav();
-  const list = await Store.getElection();
-  const el = document.getElementById('election-list');
-  el.innerHTML = list.length ? list.map(e=>`
-    <div class="bg-white rounded-xl shadow-sm p-6">
-      <div class="flex items-start gap-3">
-        <span class="text-xs px-2 py-1 rounded-full font-medium ${STATUS_COLOR[e.status]||'bg-gray-100 text-gray-600'} flex-shrink-0 mt-0.5">${e.status}</span>
-        <div class="flex-1">
-          <h3 class="font-bold text-gray-900 mb-1">${e.title}</h3>
-          <p class="text-xs text-gray-400 mb-2">${e.date}</p>
-          ${e.content?`<p class="text-gray-600 text-sm whitespace-pre-line">${e.content}</p>`:''}
-          ${e.attachment?`<a href="${e.attachment.url}" download="${e.attachment.name}" class="inline-flex items-center gap-1 text-xs text-blue-600 hover:underline mt-2">첨부파일 다운로드</a>`:''}
-        </div>
-      </div>
-    </div>`).join('') : '<div class="bg-white rounded-xl shadow-sm p-12 text-center text-gray-400">선거 공고가 없습니다</div>';
+  announcements = await Store.getElection();
+  showList();
 });
 </script>
 </body>

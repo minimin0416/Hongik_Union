@@ -331,7 +331,9 @@ const NAV_ITEMS = [
   ]},
   { title:'정보마당', href:'/info/rules', submenu:[
     { title:'규칙', href:'/info/rules' },
-    { title:'양식', href:'/info/forms' },
+    { title:'양식 및 가이드라인', href:'/info/forms' },
+    { title:'활동증명서', href:'/info/activity-cert' },
+    { title:'동아리증명서', href:'/info/club-cert' },
     { title:'벌점 현황', href:'/info/penalty' },
   ]},
   { title:'동아리선거관리위원회', href:'/election/intro', submenu:[
@@ -341,7 +343,6 @@ const NAV_ITEMS = [
   { title:'문의사항', href:'/contact/faq', submenu:[
     { title:'자주 묻는 질문', href:'/contact/faq' },
     { title:'질문 있어요', href:'/contact/ask' },
-    { title:'Q&A 게시판', href:'/contact/qna' },
   ]},
 ];
 
