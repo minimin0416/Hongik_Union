@@ -8,3 +8,27 @@
 
 /* 달력 이벤트 바 높이 */
 .leading-3\.5 { line-height: 0.875rem; }
+
+/* ── Scroll Reveal (원본 Next.js 버전과 동일한 스크롤 페이드인 효과) ── */
+body { animation: sr-fade-in 0.4s ease both; }
+
+.sr-base { opacity: 0; }
+
+.sr-base.sr-visible {
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes sr-fade-up   { from { opacity: 0; transform: translateY(32px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes sr-fade-down { from { opacity: 0; transform: translateY(-32px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes sr-fade-left { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes sr-fade-right{ from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes sr-fade-in   { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sr-zoom-in   { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+
+.sr-visible.sr-fade-up    { animation-name: sr-fade-up; }
+.sr-visible.sr-fade-down  { animation-name: sr-fade-down; }
+.sr-visible.sr-fade-left  { animation-name: sr-fade-left; }
+.sr-visible.sr-fade-right { animation-name: sr-fade-right; }
+.sr-visible.sr-fade-in    { animation-name: sr-fade-in; }
+.sr-visible.sr-zoom-in    { animation-name: sr-zoom-in; }

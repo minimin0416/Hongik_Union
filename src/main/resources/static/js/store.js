@@ -111,14 +111,18 @@ const API = '/api/data';
 async function dbGet(key, def) {
   const cached = localStorage.getItem(key);
   if (cached) {
-    fetch(`${API}?key=${encodeURIComponent(key)}`)
-      .then(r => r.json())
-      .then(v => { if (v !== null) localStorage.setItem(key, v); else localStorage.removeItem(key); })
-      .catch(() => {});
-    return JSON.parse(cached);
+    try {
+      const parsed = JSON.parse(cached);
+      fetch(`${API}?key=${encodeURIComponent(key)}`)
+        .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+        .then(v => { if (typeof v === 'string') localStorage.setItem(key, v); else localStorage.removeItem(key); })
+        .catch(() => {});
+      return parsed;
+    } catch { localStorage.removeItem(key); }
   }
   try {
     const res = await fetch(`${API}?key=${encodeURIComponent(key)}`);
+    if (!res.ok) return def;
     const value = await res.json();
     if (value !== null) { localStorage.setItem(key, value); return JSON.parse(value); }
     return def;
@@ -140,17 +144,19 @@ async function dbSet(key, value) {
 
 async function dbGetStr(key) {
   const cached = localStorage.getItem(key);
-  if (cached) {
+  if (cached && cached !== '[object Object]') {
     fetch(`${API}?key=${encodeURIComponent(key)}`)
-      .then(r => r.json())
-      .then(v => { if (v !== null) localStorage.setItem(key, v); else localStorage.removeItem(key); })
+      .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+      .then(v => { if (typeof v === 'string') localStorage.setItem(key, v); else localStorage.removeItem(key); })
       .catch(() => {});
     return cached;
   }
+  if (cached === '[object Object]') localStorage.removeItem(key);
   try {
     const res = await fetch(`${API}?key=${encodeURIComponent(key)}`);
+    if (!res.ok) return '';
     const value = await res.json();
-    if (value !== null) { localStorage.setItem(key, value); return value; }
+    if (value !== null && typeof value === 'string') { localStorage.setItem(key, value); return value; }
     return '';
   } catch { return ''; }
 }
@@ -382,6 +388,31 @@ async function initNav() {
     `;
   }
 }
+
+/* ──────────────────────────────────────────────
+   스크롤 리빌 (ScrollReveal.tsx 포팅) — [data-sr] 요소가
+   뷰포트에 들어오면 sr-visible + sr-{애니메이션} 클래스를 붙인다
+────────────────────────────────────────────── */
+function initScrollReveal() {
+  const els = document.querySelectorAll('[data-sr]');
+  if (!els.length) return;
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      const anim = el.dataset.sr || 'fade-up';
+      const delay = el.dataset.srDelay || '0';
+      const duration = el.dataset.srDuration || '600';
+      el.style.animationDelay = `${delay}ms`;
+      el.style.animationDuration = `${duration}ms`;
+      el.classList.add('sr-visible', `sr-${anim}`);
+      observer.unobserve(el);
+    });
+  }, { threshold: 0.15 });
+  els.forEach(el => observer.observe(el));
+}
+document.addEventListener('DOMContentLoaded', initScrollReveal);
+Store.initScrollReveal = initScrollReveal;
 
 Store.initNav = initNav;
 window.Store = Store;

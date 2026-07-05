@@ -20,19 +20,19 @@
 <!-- 달력 + 공지사항 -->
 <div class="max-w-5xl mx-auto px-6 py-6 grid grid-cols-1 md:grid-cols-2 gap-6">
   <!-- 달력 -->
-  <div>
+  <div class="sr-base" data-sr="fade-right" data-sr-delay="0">
     <h2 class="text-sm font-semibold text-gray-700 mb-2">달력</h2>
     <div class="bg-white rounded p-4 shadow-sm" id="calendar-wrap"></div>
   </div>
   <!-- 공지사항 -->
-  <div>
+  <div class="sr-base" data-sr="fade-left" data-sr-delay="100">
     <h2 class="text-sm font-semibold text-gray-700 mb-2">공지사항</h2>
     <div class="bg-white rounded shadow-sm overflow-hidden" style="min-height:220px" id="notice-list"></div>
   </div>
 </div>
 
 <!-- 오시는 길 -->
-<div class="max-w-5xl mx-auto px-6 pb-10">
+<div class="sr-base max-w-5xl mx-auto px-6 pb-10" data-sr="fade-up" data-sr-delay="0">
   <h2 class="text-sm font-semibold text-gray-700 mb-2">총동아리연합회실(G301-1) 오시는 길</h2>
   <div class="bg-white rounded shadow-sm overflow-hidden" style="height:200px" id="location-wrap">
     <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">
