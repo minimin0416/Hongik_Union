@@ -290,8 +290,9 @@
 <div id="tab-info" class="tab-panel hidden space-y-4">
   <div class="flex gap-2">
     <button class="subtab-btn active" onclick="setSubtab('info','rules')">규칙</button>
-    <button class="subtab-btn" onclick="setSubtab('info','forms')">양식</button>
-    <button class="subtab-btn" onclick="setSubtab('info','penalty')">벌점</button>
+    <button class="subtab-btn" onclick="setSubtab('info','forms')">양식 파일</button>
+    <button class="subtab-btn" onclick="setSubtab('info','penalty')">벌점 현황</button>
+    <button class="subtab-btn" onclick="setSubtab('info','cert')">증명서 양식</button>
   </div>
   <div id="subtab-info-rules" class="space-y-3">
     <div id="info-rules-list" class="space-y-2"></div>
@@ -330,6 +331,34 @@
         <button onclick="savePenalty()" class="admin-save-btn">저장</button>
         <button onclick="document.getElementById('penalty-form-admin').classList.add('hidden')" class="px-4 py-2 border border-gray-200 text-sm rounded-lg hover:bg-gray-50">취소</button>
       </div>
+    </div>
+  </div>
+  <div id="subtab-info-cert" class="hidden space-y-6">
+    <div class="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
+      <h3 class="font-semibold text-gray-700">페이지 문구 설정</h3>
+      <div><label class="block text-sm text-gray-600 mb-1">활동증명서 설명 문구</label><textarea id="cert-act-desc" rows="2" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none"></textarea></div>
+      <div><label class="block text-sm text-gray-600 mb-1">동아리증명서 설명 문구</label><textarea id="cert-club-desc" rows="2" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none"></textarea></div>
+      <div><label class="block text-sm text-gray-600 mb-1">제출 방법 섹션 제목</label><input id="cert-submit-title" type="text" class="admin-input"></div>
+      <div>
+        <label class="block text-sm text-gray-600 mb-1">제출 방법 항목 (한 줄에 하나씩)</label>
+        <div id="cert-methods-list" class="space-y-2 mb-2"></div>
+        <button onclick="addCertMethod()" class="text-xs text-blue-600 hover:underline">+ 항목 추가</button>
+      </div>
+      <button onclick="saveCertContent()" class="admin-save-btn">저장</button>
+    </div>
+    <div class="bg-white rounded-xl border border-gray-200 p-5">
+      <h3 class="font-semibold text-gray-700 mb-3">활동증명서 양식 파일</h3>
+      <div id="act-cert-file-info" class="text-sm text-gray-400 mb-3">등록된 파일이 없습니다.</div>
+      <label class="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-gray-800 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors">
+        📎 파일 업로드<input type="file" class="hidden" onchange="uploadCertFile(this,'activity')">
+      </label>
+    </div>
+    <div class="bg-white rounded-xl border border-gray-200 p-5">
+      <h3 class="font-semibold text-gray-700 mb-3">동아리증명서 양식 파일</h3>
+      <div id="club-cert-file-info" class="text-sm text-gray-400 mb-3">등록된 파일이 없습니다.</div>
+      <label class="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-gray-800 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors">
+        📎 파일 업로드<input type="file" class="hidden" onchange="uploadCertFile(this,'club')">
+      </label>
     </div>
   </div>
 </div>
@@ -1001,9 +1030,47 @@ async function deleteClubNews(i) { if(!confirm('삭제?')) return; clubNews.spli
 
 /* ── 정보마당 탭 ── */
 let forms=[], penalties=[];
+let actCertFile = null, clubCertFile = null;
 async function loadInfoTab() {
   forms=await Store.getForms(); penalties=await Store.getPenalties();
   renderInfoRules(); renderFormsList(); renderPenaltyList();
+  actCertFile = await Store.getActivityCertFile();
+  clubCertFile = await Store.getClubCertFile();
+  renderCertTab();
+}
+function renderCertTab() {
+  document.getElementById('cert-act-desc').value = siteContent.activityCertDesc || '';
+  document.getElementById('cert-club-desc').value = siteContent.clubCertDesc || '';
+  document.getElementById('cert-submit-title').value = siteContent.certSubmitTitle || '';
+  renderCertMethods();
+  document.getElementById('act-cert-file-info').textContent = actCertFile ? `${actCertFile.name} (등록됨)` : '등록된 파일이 없습니다.';
+  document.getElementById('club-cert-file-info').textContent = clubCertFile ? `${clubCertFile.name} (등록됨)` : '등록된 파일이 없습니다.';
+}
+function renderCertMethods() {
+  const methods = siteContent.certSubmitMethods || [];
+  document.getElementById('cert-methods-list').innerHTML = methods.map((m,i) => `
+    <div class="flex gap-2">
+      <input value="${m}" onchange="siteContent.certSubmitMethods[${i}]=this.value" class="admin-input flex-1">
+      <button onclick="removeCertMethod(${i})" class="text-red-400 hover:text-red-600 px-2">✕</button>
+    </div>`).join('');
+}
+function addCertMethod() { siteContent.certSubmitMethods = [...(siteContent.certSubmitMethods||[]), '']; renderCertMethods(); }
+function removeCertMethod(i) { siteContent.certSubmitMethods = siteContent.certSubmitMethods.filter((_,j)=>j!==i); renderCertMethods(); }
+async function saveCertContent() {
+  siteContent = { ...siteContent,
+    activityCertDesc: document.getElementById('cert-act-desc').value,
+    clubCertDesc: document.getElementById('cert-club-desc').value,
+    certSubmitTitle: document.getElementById('cert-submit-title').value,
+  };
+  await Store.saveSiteContent(siteContent);
+}
+async function uploadCertFile(input, kind) {
+  const file = input.files[0];
+  if (!file) return;
+  const att = await Store.readFileAsBase64(file);
+  if (kind === 'activity') { await Store.saveActivityCertFile(att); actCertFile = att; }
+  else { await Store.saveClubCertFile(att); clubCertFile = att; }
+  renderCertTab();
 }
 function renderInfoRules() {
   const el=document.getElementById('info-rules-list');
