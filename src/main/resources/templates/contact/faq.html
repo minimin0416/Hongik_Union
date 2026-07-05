@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('자주 묻는 질문')}"></head>
+<body class="bg-gray-100 min-h-screen">
+<div th:replace="~{fragments/nav :: nav}"></div>
+<main class="max-w-4xl mx-auto px-6 py-10">
+  <h1 class="text-2xl font-black text-gray-900 mb-6">자주 묻는 질문</h1>
+  <div class="space-y-3" id="faq-list"></div>
+</main>
+<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  await Store.initNav();
+  const c = await Store.getSiteContent();
+  const el = document.getElementById('faq-list');
+  el.innerHTML = c.faqs.map((faq,i)=>`
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+      <button onclick="toggleFaq(${i})" class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-gray-50 transition-colors">
+        <span class="font-medium text-gray-900 pr-4">Q. ${faq.q}</span>
+        <svg id="faq-icon-${i}" class="w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </button>
+      <div id="faq-answer-${i}" class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed border-t border-gray-100 pt-3">A. ${faq.a}</div>
+    </div>`).join('');
+});
+
+function toggleFaq(i) {
+  const ans = document.getElementById(`faq-answer-${i}`);
+  const icon = document.getElementById(`faq-icon-${i}`);
+  const isOpen = !ans.classList.contains('hidden');
+  ans.classList.toggle('hidden');
+  icon.style.transform = isOpen ? '' : 'rotate(180deg)';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('메인')}"></head>
+<body class="min-h-screen" style="background:#e8e8e8">
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<!-- Hero 배너 슬라이더 -->
+<div class="relative w-full overflow-hidden" style="height:320px" id="banner-wrap">
+  <div id="banner-bg" class="absolute inset-0 bg-[#b0bec5]"></div>
+  <img id="banner-img" class="absolute inset-0 w-full h-full object-cover hidden" alt="배너">
+  <div id="banner-text" class="absolute inset-0 bg-black/30 hidden flex-col items-center justify-center text-white text-center px-6">
+    <h1 id="banner-title" class="text-2xl md:text-4xl font-black mb-2 drop-shadow"></h1>
+    <p id="banner-subtitle" class="text-base md:text-lg text-white/90 drop-shadow"></p>
+  </div>
+  <button id="prev-btn" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/30 hover:bg-black/50 flex items-center justify-center text-white text-lg transition-colors rounded-sm">◄</button>
+  <button id="next-btn" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/30 hover:bg-black/50 flex items-center justify-center text-white text-lg transition-colors rounded-sm">►</button>
+  <div id="banner-dots" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5"></div>
+</div>
+
+<!-- 달력 + 공지사항 -->
+<div class="max-w-5xl mx-auto px-6 py-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+  <!-- 달력 -->
+  <div>
+    <h2 class="text-sm font-semibold text-gray-700 mb-2">달력</h2>
+    <div class="bg-white rounded p-4 shadow-sm" id="calendar-wrap"></div>
+  </div>
+  <!-- 공지사항 -->
+  <div>
+    <h2 class="text-sm font-semibold text-gray-700 mb-2">공지사항</h2>
+    <div class="bg-white rounded shadow-sm overflow-hidden" style="min-height:220px" id="notice-list"></div>
+  </div>
+</div>
+
+<!-- 오시는 길 -->
+<div class="max-w-5xl mx-auto px-6 pb-10">
+  <h2 class="text-sm font-semibold text-gray-700 mb-2">총동아리연합회실(G301-1) 오시는 길</h2>
+  <div class="bg-white rounded shadow-sm overflow-hidden" style="height:200px" id="location-wrap">
+    <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">
+      <div class="text-center"><p>지도 이미지를 업로드해주세요</p><a href="/about/location" class="text-blue-500 text-xs hover:underline mt-1 block">오시는 길 자세히 보기 →</a></div>
+    </div>
+  </div>
+  <a href="/about/location" class="text-xs text-gray-400 hover:text-gray-600 mt-1 block text-right">오시는 길 자세히 보기 →</a>
+</div>
+
+<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
+
+<script>
+const DAY_NAMES = ['일','월','화','수','목','금','토'];
+function toDateStr(y,m,d){ return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+
+function renderCalendar(events, year, month) {
+  const today = new Date();
+  const todayStr = toDateStr(today.getFullYear(), today.getMonth(), today.getDate());
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const cells = [];
+  for(let i=0;i<firstDay;i++) cells.push(null);
+  for(let i=1;i<=daysInMonth;i++) cells.push(i);
+  while(cells.length%7!==0) cells.push(null);
+  const weeks=[];
+  for(let i=0;i<cells.length;i+=7) weeks.push(cells.slice(i,i+7));
+
+  const wrap = document.getElementById('calendar-wrap');
+  wrap.innerHTML = `
+    <div class="flex items-center justify-between mb-3">
+      <button id="cal-prev" class="w-6 h-6 flex items-center justify-center rounded hover:bg-gray-200 text-gray-500 text-sm">‹</button>
+      <span class="text-sm font-semibold text-gray-700">${year}년 ${month+1}월</span>
+      <button id="cal-next" class="w-6 h-6 flex items-center justify-center rounded hover:bg-gray-200 text-gray-500 text-sm">›</button>
+    </div>
+    <div class="grid grid-cols-7 mb-1">${DAY_NAMES.map((d,i)=>`<div class="text-center text-xs font-medium py-1 ${i===0?'text-red-500':i===6?'text-blue-500':'text-gray-500'}">${d}</div>`).join('')}</div>
+    ${weeks.map(week=>`
+      <div class="grid grid-cols-7 border-b border-gray-100 last:border-0">
+        ${week.map((day,di)=>{
+          if(!day) return `<div class="min-h-14 border-r border-gray-100 last:border-0 bg-gray-50/30"></div>`;
+          const ds = toDateStr(year,month,day);
+          const holiday = Store.getHoliday(ds);
+          const isToday = ds===todayStr;
+          const dayEvs = events.filter(e=>e.startDate<=ds&&e.endDate>=ds);
+          const isRed = di===0||!!holiday;
+          const isSat = di===6;
+          return `<div class="min-h-14 border-r border-gray-100 last:border-0 p-1">
+            <span class="inline-flex w-5 h-5 items-center justify-center rounded-full text-xs font-semibold ${isToday?'bg-gray-800 text-white':isRed?'text-red-500':isSat?'text-blue-500':'text-gray-700'}">${day}</span>
+            ${holiday?`<div class="text-red-500 text-[9px] leading-tight font-medium truncate">${holiday}</div>`:''}
+            <div class="space-y-0.5 mt-0.5">${dayEvs.map(ev=>{
+              const isStart=ev.startDate===ds, isEnd=ev.endDate===ds, isSingle=isStart&&isEnd;
+              return `<div style="background:${ev.color||'#3B82F6'}" class="text-white text-[9px] leading-3.5 px-1 py-0.5 overflow-hidden ${isSingle?'rounded':isStart?'rounded-l':isEnd?'rounded-r':''}">
+                ${isStart?`<span class="truncate block">${ev.title}</span>`:`<span class="invisible text-[9px]">.</span>`}
+              </div>`;
+            }).join('')}</div>
+          </div>`;
+        }).join('')}
+      </div>`).join('')}
+  `;
+  document.getElementById('cal-prev').onclick = () => {
+    const d = new Date(year, month-1, 1);
+    renderCalendar(events, d.getFullYear(), d.getMonth());
+  };
+  document.getElementById('cal-next').onclick = () => {
+    const d = new Date(year, month+1, 1);
+    renderCalendar(events, d.getFullYear(), d.getMonth());
+  };
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await Store.initNav();
+  const [notices, slides, bannerImgs, events, locationImg] = await Promise.all([
+    Store.getNotices(), Store.getSiteContent().then(c=>c.bannerSlides),
+    Store.getBanners(), Store.getCalendarEvents(), Store.getLocationImage()
+  ]);
+
+  // 배너
+  let cur = 0;
+  const slideCount = slides.length || 3;
+  const dots = document.getElementById('banner-dots');
+  dots.innerHTML = Array.from({length:slideCount},(_,i)=>`<button class="banner-dot w-2 h-2 rounded-full transition-all ${i===0?'bg-white':'bg-white/40'}"></button>`).join('');
+  dots.querySelectorAll('.banner-dot').forEach((btn,i)=>btn.addEventListener('click',()=>showSlide(i)));
+
+  function showSlide(i) {
+    cur = i;
+    const img = bannerImgs[i]||'';
+    const slide = slides[i];
+    const bannerImg = document.getElementById('banner-img');
+    const bannerBg = document.getElementById('banner-bg');
+    const bannerText = document.getElementById('banner-text');
+    if(img){ bannerImg.src=img; bannerImg.classList.remove('hidden'); bannerBg.style.display='none'; }
+    else { bannerImg.classList.add('hidden'); bannerBg.style.display=''; }
+    if(slide&&(slide.title||slide.subtitle)){
+      document.getElementById('banner-title').textContent=slide.title||'';
+      document.getElementById('banner-subtitle').textContent=slide.subtitle||'';
+      bannerText.style.display='flex';
+    } else { bannerText.style.display='none'; }
+    dots.querySelectorAll('.banner-dot').forEach((d,di)=>d.className=`banner-dot w-2 h-2 rounded-full transition-all ${di===cur?'bg-white':'bg-white/40'}`);
+  }
+  showSlide(0);
+  document.getElementById('prev-btn').onclick=()=>showSlide((cur-1+slideCount)%slideCount);
+  document.getElementById('next-btn').onclick=()=>showSlide((cur+1)%slideCount);
+  setInterval(()=>showSlide((cur+1)%slideCount), 5000);
+
+  // 공지사항
+  const nl = document.getElementById('notice-list');
+  nl.innerHTML = notices.length ? notices.map((n,i)=>`
+    <a href="/news/notices" class="flex items-center gap-2 px-4 py-3 text-sm hover:bg-gray-50 transition-colors ${i<notices.length-1?'border-b border-gray-100':''}">
+      ${n.isPinned?'<span class="text-xs bg-blue-100 text-blue-700 px-1 py-0.5 rounded font-bold flex-shrink-0">고정</span>':''}
+      <span class="flex-1 text-gray-700 truncate">${n.title}</span>
+      <span class="text-xs text-gray-400 flex-shrink-0">${n.createdAt}</span>
+    </a>`).join('') : '<div class="p-6 text-center text-gray-400 text-sm">공지사항이 없습니다</div>';
+
+  // 달력
+  const now = new Date();
+  renderCalendar(events, now.getFullYear(), now.getMonth());
+
+  // 오시는 길
+  if(locationImg){
+    const lw = document.getElementById('location-wrap');
+    lw.innerHTML = `<img src="${locationImg}" alt="오시는 길" class="w-full h-full object-contain">`;
+  }
+});
+</script>
+</body>
+</html>

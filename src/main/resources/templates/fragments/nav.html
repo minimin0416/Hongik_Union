@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="nav" class="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center h-16">
+      <a href="/" class="flex-shrink-0 mr-8">
+        <div id="logo-text" class="flex flex-col leading-tight">
+          <span class="font-black text-base text-gray-900 tracking-tight">홍익대학교</span>
+          <span class="text-xs text-gray-400 tracking-widest uppercase font-medium">HONGIK UNIVERSITY</span>
+        </div>
+        <img id="logo-img" alt="로고" style="height:40px;max-width:160px;object-fit:contain;display:none">
+      </a>
+      <nav class="hidden lg:flex items-center h-full flex-1" id="desktop-nav"></nav>
+      <div class="flex items-center gap-2 ml-auto" id="header-icons">
+        <button id="hamburger" class="lg:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="mobile-menu" class="lg:hidden hidden bg-white border-t border-gray-200 shadow-lg"></div>
+</header>
+</body>
+</html>

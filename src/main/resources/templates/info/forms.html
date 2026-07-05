@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('양식')}"></head>
+<body class="bg-gray-100 min-h-screen">
+<div th:replace="~{fragments/nav :: nav}"></div>
+<main class="max-w-4xl mx-auto px-6 py-10">
+  <h1 class="text-2xl font-black text-gray-900 mb-6">양식</h1>
+  <div class="bg-white rounded-xl shadow-sm overflow-hidden" id="forms-list"></div>
+</main>
+<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  await Store.initNav();
+  const forms = await Store.getForms();
+  const el = document.getElementById('forms-list');
+  el.innerHTML = forms.length ? forms.map((f,i)=>`
+    <div class="flex items-center gap-4 px-5 py-4 ${i<forms.length-1?'border-b border-gray-100':''}">
+      <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-xs font-bold flex-shrink-0">${f.fileType}</div>
+      <div class="flex-1">
+        <div class="font-medium text-gray-800">${f.name}</div>
+        <div class="text-xs text-gray-400 mt-0.5">${f.description} · ${f.updatedAt}</div>
+      </div>
+      ${f.attachment?`<a href="${f.attachment.url}" download="${f.attachment.name}" class="px-3 py-1.5 bg-gray-900 text-white text-xs rounded-lg hover:bg-gray-700 transition-colors">다운로드</a>`:'<span class="text-xs text-gray-400">파일 없음</span>'}
+    </div>`).join('') : '<div class="p-12 text-center text-gray-400">양식이 없습니다</div>';
+});
+</script>
+</body>
+</html>

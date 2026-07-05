@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('중앙동아리')}"></head>
+<body class="bg-gray-100 min-h-screen">
+<div th:replace="~{fragments/nav :: nav}"></div>
+<main class="max-w-6xl mx-auto px-6 py-10">
+  <div class="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+    <h1 class="text-2xl font-black text-gray-900">중앙동아리</h1>
+    <div class="flex gap-2 flex-wrap" id="filter-btns"></div>
+    <input id="search-input" type="text" placeholder="동아리 검색..." class="ml-auto border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300">
+  </div>
+  <div id="club-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+</main>
+<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
+<script>
+let allClubs = [], currentFilter = '전체';
+function renderClubs() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const filtered = allClubs.filter(c =>
+    (currentFilter==='전체'||c.category===currentFilter) &&
+    (!q || c.name.toLowerCase().includes(q) || c.intro.toLowerCase().includes(q))
+  );
+  document.getElementById('club-list').innerHTML = filtered.length ? filtered.map(c=>`
+    <div class="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow">
+      ${c.imageUrl?`<img src="${c.imageUrl}" alt="${c.name}" class="w-full h-32 object-cover rounded-lg mb-3">`:''}
+      <div class="flex items-start justify-between mb-2">
+        <h3 class="font-bold text-gray-900">${c.name}</h3>
+        <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">${c.category}</span>
+      </div>
+      <p class="text-gray-600 text-sm mb-3">${c.intro}</p>
+      <div class="text-xs text-gray-400 space-y-1">
+        ${c.room?`<div>동아리방: ${c.room}</div>`:''}
+        ${c.president?`<div>회장: ${c.president}</div>`:''}
+        ${c.recruitPeriod?`<div>모집: ${c.recruitPeriod}</div>`:''}
+      </div>
+    </div>`).join('') : '<div class="col-span-3 text-center text-gray-400 py-12">해당하는 동아리가 없습니다</div>';
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await Store.initNav();
+  allClubs = await Store.getClubs();
+  const categories = ['전체', ...new Set(allClubs.map(c=>c.category).filter(Boolean))];
+  const filterWrap = document.getElementById('filter-btns');
+  filterWrap.innerHTML = categories.map(cat=>`
+    <button onclick="setFilter('${cat}')" class="filter-btn px-3 py-1 rounded-full text-sm border transition-colors ${cat==='전체'?'bg-gray-900 text-white border-gray-900':'bg-white text-gray-600 border-gray-200 hover:border-gray-400'}">${cat}</button>
+  `).join('');
+  document.getElementById('search-input').addEventListener('input', renderClubs);
+  renderClubs();
+});
+
+function setFilter(cat) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    const active = btn.textContent.trim()===cat;
+    btn.className = `filter-btn px-3 py-1 rounded-full text-sm border transition-colors ${active?'bg-gray-900 text-white border-gray-900':'bg-white text-gray-600 border-gray-200 hover:border-gray-400'}`;
+  });
+  renderClubs();
+}
+</script>
+</body>
+</html>

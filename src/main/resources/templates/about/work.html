@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('주요업무')}"></head>
+<body class="bg-gray-100 min-h-screen">
+<div th:replace="~{fragments/nav :: nav}"></div>
+<main class="max-w-4xl mx-auto px-6 py-10">
+  <h1 class="text-2xl font-black text-gray-900 mb-6">주요업무</h1>
+  <div id="work-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+</main>
+<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  await Store.initNav();
+  const c = await Store.getSiteContent();
+  document.getElementById('work-list').innerHTML = c.workItems.map(w=>`
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <h3 class="font-bold text-gray-900 mb-2">${w.title}</h3>
+      <p class="text-gray-600 text-sm leading-relaxed">${w.desc}</p>
+    </div>`).join('');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('동아리방 위치')}"></head>
+<body class="bg-gray-100 min-h-screen">
+<div th:replace="~{fragments/nav :: nav}"></div>
+<main class="max-w-4xl mx-auto px-6 py-10">
+  <h1 class="text-2xl font-black text-gray-900 mb-6">동아리방 위치</h1>
+  <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-6" id="map-wrap" style="min-height:240px">
+    <div class="flex items-center justify-center h-60 text-gray-400 text-sm">캠퍼스 지도 이미지를 업로드해주세요 (관리자 페이지)</div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="building-list"></div>
+</main>
+<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  await Store.initNav();
+  const [img, c] = await Promise.all([Store.getClubMapImage(), Store.getSiteContent()]);
+  if(img) document.getElementById('map-wrap').innerHTML = `<img src="${img}" alt="동아리방 위치" class="w-full h-auto">`;
+  document.getElementById('building-list').innerHTML = c.clubBuildings.map(b=>`
+    <div class="bg-white rounded-xl shadow-sm p-5">
+      <h3 class="font-bold text-gray-900 mb-3">${b.building}</h3>
+      <ul class="space-y-1">${b.clubs.map(club=>`<li class="text-sm text-gray-600">• ${club}</li>`).join('')}</ul>
+    </div>`).join('');
+});
+</script>
+</body>
+</html>

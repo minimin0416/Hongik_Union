@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('오시는 길')}"></head>
+<body class="bg-gray-100 min-h-screen">
+<div th:replace="~{fragments/nav :: nav}"></div>
+<main class="max-w-4xl mx-auto px-6 py-10">
+  <h1 class="text-2xl font-black text-gray-900 mb-6">오시는 길</h1>
+  <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-6" id="map-wrap" style="min-height:240px">
+    <div class="flex items-center justify-center h-60 text-gray-400 text-sm">지도 이미지를 업로드해주세요 (관리자 페이지)</div>
+  </div>
+  <div class="bg-white rounded-xl shadow-sm p-6 grid grid-cols-1 md:grid-cols-2 gap-4" id="info-wrap"></div>
+</main>
+<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  await Store.initNav();
+  const [img, c] = await Promise.all([Store.getLocationImage(), Store.getSiteContent()]);
+  if(img) document.getElementById('map-wrap').innerHTML = `<img src="${img}" alt="오시는 길" class="w-full h-auto">`;
+  document.getElementById('info-wrap').innerHTML = [
+    ['주소', c.locationAddress], ['운영시간', c.locationHours],
+    ['전화', c.locationPhone], ['이메일', c.locationEmail],
+  ].map(([label, val])=>`
+    <div><dt class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">${label}</dt>
+    <dd class="text-gray-800">${val||'-'}</dd></div>`).join('');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('일정')}"></head>
+<body class="bg-gray-100 min-h-screen">
+<div th:replace="~{fragments/nav :: nav}"></div>
+<main class="max-w-5xl mx-auto px-6 py-10">
+  <h1 class="text-2xl font-black text-gray-900 mb-6">일정</h1>
+  <div class="bg-white rounded-xl shadow-sm p-6" id="calendar-wrap"></div>
+</main>
+<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
+<script>
+const DAY_NAMES = ['일','월','화','수','목','금','토'];
+function toDateStr(y,m,d){ return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+let calEvents = [], calYear, calMonth;
+
+function renderCalendar() {
+  const today = new Date();
+  const todayStr = toDateStr(today.getFullYear(), today.getMonth(), today.getDate());
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  const cells = [];
+  for(let i=0;i<firstDay;i++) cells.push(null);
+  for(let i=1;i<=daysInMonth;i++) cells.push(i);
+  while(cells.length%7!==0) cells.push(null);
+  const weeks=[];
+  for(let i=0;i<cells.length;i+=7) weeks.push(cells.slice(i,i+7));
+
+  const wrap = document.getElementById('calendar-wrap');
+  wrap.innerHTML = `
+    <div class="flex items-center justify-between mb-4">
+      <button id="cal-prev" class="px-3 py-1 rounded hover:bg-gray-100 text-gray-600">◀ 이전</button>
+      <span class="text-lg font-bold text-gray-800">${calYear}년 ${calMonth+1}월</span>
+      <button id="cal-next" class="px-3 py-1 rounded hover:bg-gray-100 text-gray-600">다음 ▶</button>
+    </div>
+    <div class="grid grid-cols-7 mb-1">${DAY_NAMES.map((d,i)=>`<div class="text-center text-xs font-medium py-2 ${i===0?'text-red-500':i===6?'text-blue-500':'text-gray-500'}">${d}</div>`).join('')}</div>
+    ${weeks.map(week=>`
+      <div class="grid grid-cols-7 border-b border-gray-100 last:border-0">
+        ${week.map((day,di)=>{
+          if(!day) return `<div class="min-h-20 border-r border-gray-100 last:border-0 bg-gray-50/30"></div>`;
+          const ds = toDateStr(calYear,calMonth,day);
+          const holiday = Store.getHoliday(ds);
+          const isToday = ds===todayStr;
+          const dayEvs = calEvents.filter(e=>e.startDate<=ds&&e.endDate>=ds);
+          const isRed = di===0||!!holiday;
+          const isSat = di===6;
+          return `<div class="min-h-20 border-r border-gray-100 last:border-0 p-1">
+            <span class="inline-flex w-6 h-6 items-center justify-center rounded-full text-sm font-semibold ${isToday?'bg-gray-800 text-white':isRed?'text-red-500':isSat?'text-blue-500':'text-gray-700'}">${day}</span>
+            ${holiday?`<div class="text-red-500 text-[9px] leading-tight truncate">${holiday}</div>`:''}
+            <div class="space-y-0.5 mt-0.5">${dayEvs.map(ev=>{
+              const isStart=ev.startDate===ds, isEnd=ev.endDate===ds, isSingle=isStart&&isEnd;
+              return `<div style="background:${ev.color||'#3B82F6'}" class="text-white text-[9px] leading-4 px-1 py-0.5 ${isSingle?'rounded':isStart?'rounded-l':isEnd?'rounded-r':''}">
+                ${isStart?`<span class="truncate block">${ev.title}</span>`:`<span class="invisible">.</span>`}
+              </div>`;
+            }).join('')}</div>
+          </div>`;
+        }).join('')}
+      </div>`).join('')}
+  `;
+  document.getElementById('cal-prev').onclick = () => {
+    const d = new Date(calYear, calMonth-1, 1);
+    calYear=d.getFullYear(); calMonth=d.getMonth(); renderCalendar();
+  };
+  document.getElementById('cal-next').onclick = () => {
+    const d = new Date(calYear, calMonth+1, 1);
+    calYear=d.getFullYear(); calMonth=d.getMonth(); renderCalendar();
+  };
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await Store.initNav();
+  calEvents = await Store.getCalendarEvents();
+  const now = new Date();
+  calYear=now.getFullYear(); calMonth=now.getMonth();
+  renderCalendar();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('회의록')}"></head>
+<body class="bg-gray-100 min-h-screen">
+<div th:replace="~{fragments/nav :: nav}"></div>
+<main class="max-w-4xl mx-auto px-6 py-10">
+  <h1 class="text-2xl font-black text-gray-900 mb-6">회의록</h1>
+  <div class="bg-white rounded-xl shadow-sm overflow-hidden" id="minutes-list"></div>
+</main>
+<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  await Store.initNav();
+  const minutes = await Store.getMinutes();
+  const el = document.getElementById('minutes-list');
+  el.innerHTML = minutes.length ? minutes.map((m,i)=>`
+    <div class="flex items-center gap-4 px-5 py-4 ${i<minutes.length-1?'border-b border-gray-100':''}">
+      <div class="flex-1">
+        <div class="font-medium text-gray-800">${m.title}</div>
+        <div class="text-xs text-gray-400 mt-1">${m.date} · 참석 ${m.attendees}</div>
+      </div>
+      ${m.attachment?`<a href="${m.attachment.url}" download="${m.attachment.name}" class="text-xs text-blue-600 hover:underline">다운로드</a>`:''}
+    </div>`).join('') : '<div class="p-12 text-center text-gray-400">회의록이 없습니다</div>';
+});
+</script>
+</body>
+</html>
