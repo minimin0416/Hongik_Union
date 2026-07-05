@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="about(active)">
+  <div class="section-header">
+    <h1>총동아리연합회</h1>
+    <p>홍익대학교 제39대 총동아리연합회 Union</p>
+  </div>
+  <div class="sub-nav">
+    <div class="sub-nav-inner">
+      <a href="/about/intro" class="sub-nav-link" th:classappend="${active == 'intro'} ? 'active' : ''">총동아리연합회란</a>
+      <a href="/about/work" class="sub-nav-link" th:classappend="${active == 'work'} ? 'active' : ''">주요업무</a>
+      <a href="/about/org" class="sub-nav-link" th:classappend="${active == 'org'} ? 'active' : ''">조직도</a>
+      <a href="/about/location" class="sub-nav-link" th:classappend="${active == 'location'} ? 'active' : ''">오시는 길</a>
+      <a href="/about/rules" class="sub-nav-link" th:classappend="${active == 'rules'} ? 'active' : ''">회칙</a>
+    </div>
+  </div>
+</div>
+
+<div th:fragment="clubs(active)">
+  <div class="section-header">
+    <h1>동아리 소개</h1>
+    <p>홍익대학교 제39대 총동아리연합회 Union</p>
+  </div>
+  <div class="sub-nav">
+    <div class="sub-nav-inner">
+      <a href="/clubs/central" class="sub-nav-link" th:classappend="${active == 'central'} ? 'active' : ''">중앙동아리</a>
+      <a href="/clubs/provisional" class="sub-nav-link" th:classappend="${active == 'provisional'} ? 'active' : ''">가동아리</a>
+      <a href="/clubs/location" class="sub-nav-link" th:classappend="${active == 'location'} ? 'active' : ''">동아리방 위치</a>
+    </div>
+  </div>
+</div>
+
+<div th:fragment="news(active)">
+  <div class="section-header">
+    <h1>소식마당</h1>
+    <p>홍익대학교 총동아리연합회 소식을 확인하세요</p>
+  </div>
+  <div class="sub-nav">
+    <div class="sub-nav-inner">
+      <a href="/news/notices" class="sub-nav-link" th:classappend="${active == 'notices'} ? 'active' : ''">공지사항</a>
+      <a href="/news/clubs" class="sub-nav-link" th:classappend="${active == 'clubs'} ? 'active' : ''">동아리 소식</a>
+      <a href="/news/calendar" class="sub-nav-link" th:classappend="${active == 'calendar'} ? 'active' : ''">일정</a>
+      <a href="/news/minutes" class="sub-nav-link" th:classappend="${active == 'minutes'} ? 'active' : ''">회의록</a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

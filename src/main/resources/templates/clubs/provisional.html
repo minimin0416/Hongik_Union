@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: head('중앙동아리')}"></head>
+<head th:replace="~{fragments/head :: head('가동아리')}"></head>
 <body class="min-h-screen" style="background:#e8e8e8">
 <div th:replace="~{fragments/nav :: nav}"></div>
-<div th:replace="~{fragments/subheader :: clubs('central')}"></div>
+<div th:replace="~{fragments/subheader :: clubs('provisional')}"></div>
 <div class="page-content">
-  <h2 class="text-2xl font-bold text-gray-800 mb-6">중앙동아리</h2>
+  <h2 class="text-2xl font-bold text-gray-800 mb-2">가동아리</h2>
+  <p class="text-sm text-gray-500 mb-6">중앙동아리 지위 획득을 준비 중인 동아리입니다.</p>
   <div class="flex flex-col sm:flex-row gap-3 mb-5">
     <input id="search-input" type="text" placeholder="동아리명 또는 설명 검색"
       class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-gray-500 bg-white">
@@ -13,8 +14,8 @@
   <div id="category-tabs" class="flex gap-2 flex-wrap mb-6"></div>
   <div id="club-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
   <div id="empty-state" class="text-center py-16 text-gray-400 hidden">
-    <p class="text-lg mb-1">검색 결과가 없습니다</p>
-    <p class="text-sm">다른 검색어나 분과를 선택해보세요</p>
+    <p class="text-lg mb-1" id="empty-title"></p>
+    <p class="text-sm" id="empty-desc"></p>
   </div>
 </div>
 <footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
@@ -37,33 +38,50 @@ function render() {
     (!q || c.name.includes(q) || c.desc.includes(q))
   );
   const grid = document.getElementById('club-grid');
+  const empty = document.getElementById('empty-state');
+
+  if (allClubs.length === 0) {
+    grid.innerHTML = '';
+    document.getElementById('empty-title').textContent = '등록된 가동아리가 없습니다';
+    document.getElementById('empty-desc').textContent = '관리자 페이지에서 가동아리를 추가해주세요';
+    empty.classList.remove('hidden');
+    return;
+  }
+
   grid.innerHTML = filtered.map((club, idx) => `
-    <a href="/clubs/central/${club.id}" class="sr-base" data-sr="zoom-in" data-sr-delay="${Math.min(idx % 6, 5) * 70}">
+    <a href="/clubs/provisional/${club.id}" class="sr-base" data-sr="zoom-in" data-sr-delay="${Math.min(idx % 6, 5) * 70}">
       <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md hover:border-gray-400 transition-all cursor-pointer h-full">
         <div class="flex items-start justify-between mb-3">
-          <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden">
-            ${club.logoUrl ? `<img src="${club.logoUrl}" alt="${club.name}" class="w-full h-full object-cover">` : `<span class="text-gray-600 font-bold text-sm">${club.name.slice(0,2)}</span>`}
+          <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden">
+            ${club.logoUrl ? `<img src="${club.logoUrl}" alt="${club.name}" class="w-full h-full object-cover">` : `<span class="text-amber-700 font-bold text-sm">${club.name.slice(0,2)}</span>`}
           </div>
-          <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full font-medium">${club.category}</span>
+          <span class="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full font-medium">${club.category}</span>
         </div>
         <h3 class="font-bold text-gray-800 mb-1">${club.name}</h3>
         <p class="text-gray-500 text-sm mb-3 leading-relaxed">${club.desc}</p>
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-1 text-xs text-gray-400">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
-            ${club.room || ''}
+            ${club.room || '동아리방 없음'}
           </div>
           <span class="text-xs text-gray-400">자세히 보기 →</span>
         </div>
       </div>
     </a>`).join('');
-  document.getElementById('empty-state').classList.toggle('hidden', filtered.length !== 0);
+
+  if (filtered.length === 0) {
+    document.getElementById('empty-title').textContent = '검색 결과가 없습니다';
+    document.getElementById('empty-desc').textContent = '다른 검색어나 분과를 선택해보세요';
+    empty.classList.remove('hidden');
+  } else {
+    empty.classList.add('hidden');
+  }
   Store.initScrollReveal();
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
   await Store.initNav();
-  allClubs = await Store.getClubs();
+  allClubs = await Store.getProvisionalClubs();
   document.getElementById('search-input').addEventListener('input', render);
   render();
 });

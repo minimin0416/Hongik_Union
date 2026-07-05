@@ -1,33 +1,51 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('회칙')}"></head>
-<body class="bg-gray-100 min-h-screen">
+<body class="min-h-screen" style="background:#e8e8e8">
 <div th:replace="~{fragments/nav :: nav}"></div>
-<main class="max-w-4xl mx-auto px-6 py-10">
-  <h1 class="text-2xl font-black text-gray-900 mb-6">회칙</h1>
-  <div class="bg-white rounded-xl shadow-sm p-8">
-    <pre id="rules-text" class="text-gray-700 leading-relaxed whitespace-pre-wrap font-sans text-sm"></pre>
-    <div id="rules-file" class="mt-4 hidden">
-      <a id="rules-file-link" href="#" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm text-gray-700 transition-colors">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-        <span id="rules-file-name">파일 다운로드</span>
-      </a>
-    </div>
+<div th:replace="~{fragments/subheader :: about('rules')}"></div>
+<div class="page-content">
+  <div class="max-w-4xl">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">회칙</h2>
+    <div id="rules-wrap"></div>
   </div>
-</main>
+</div>
 <footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
   await Store.initNav();
   const c = await Store.getSiteContent();
-  document.getElementById('rules-text').textContent = c.rules;
-  if(c.rulesFile) {
-    const el = document.getElementById('rules-file');
-    el.classList.remove('hidden');
-    document.getElementById('rules-file-link').href = c.rulesFile.url;
-    document.getElementById('rules-file-link').download = c.rulesFile.name;
-    document.getElementById('rules-file-name').textContent = c.rulesFile.name;
+  const file = c.rulesFile;
+  const wrap = document.getElementById('rules-wrap');
+  if (!file) {
+    wrap.innerHTML = `<div class="bg-white border border-gray-200 rounded-xl p-12 flex items-center justify-center">
+      <p class="text-gray-400 text-sm">등록된 회칙 파일이 없습니다.</p>
+    </div>`;
+    return;
   }
+  const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+  wrap.innerHTML = `
+    ${isPdf ? `<div class="hidden md:block bg-white border border-gray-200 rounded-xl overflow-hidden mb-3">
+      <iframe src="${file.url}" class="w-full" style="height:800px;border:none"></iframe>
+    </div>` : ''}
+    <div class="flex items-center justify-between bg-white border border-gray-200 rounded-xl px-5 py-3.5 flex-wrap gap-3">
+      <div class="flex items-center gap-2 min-w-0">
+        <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <span class="text-sm text-gray-700 font-medium truncate">${file.name}</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="rules-open" class="md:hidden flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          열기
+        </button>
+        <button id="rules-download" class="flex items-center gap-1.5 px-4 py-2 bg-gray-800 text-white text-sm font-semibold rounded-lg hover:bg-gray-700 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          다운로드
+        </button>
+      </div>
+    </div>`;
+  document.getElementById('rules-open').addEventListener('click', () => Store.openAsBlob(file));
+  document.getElementById('rules-download').addEventListener('click', () => Store.downloadFile(file.url, file.name));
 });
 </script>
 </body>

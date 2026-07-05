@@ -42,6 +42,17 @@ const defaultForms = [
   { id:'3', name:'활동 지원금 신청서', description:'활동 지원금 신청 시 제출', fileType:'HWP', updatedAt:'2025.03' },
   { id:'4', name:'활동 보고서 양식', description:'학기 말 제출 필수', fileType:'HWP', updatedAt:'2025.03' },
 ];
+const defaultClubs = [
+  { id:1, name:'홍익극회', category:'공연분과', room:'A동 101호', desc:'연극 공연 및 창작 활동을 하는 동아리', president:'홍길동', contact:'010-0000-0001', recruitPeriod:'매 학기 초 모집', meetingSchedule:'매주 화·목 18:00', intro:'홍익극회는 연극을 사랑하는 사람들이 모여 창작 활동을 하는 동아리입니다. 매 학기 정기 공연을 개최하며, 연기·연출·스태프 등 다양한 분야에서 활동할 수 있습니다.', activities:['정기 연극 공연 (매 학기)','창작극 제작','워크숍 및 연기 수업','타 대학 연극제 참가'], targets:['연극에 관심 있는 누구나','연기 경험 없어도 가능','공연 기획·제작에 관심 있는 학생'], instagram:'@hongik_theatre', imageUrl:'' },
+  { id:2, name:'홍익밴드', category:'공연분과', room:'D동 205호', desc:'다양한 장르의 음악을 연주하는 밴드 동아리', president:'김민준', contact:'010-0000-0002', recruitPeriod:'매 학기 초 모집', meetingSchedule:'매주 수·금 18:00', intro:'홍익밴드는 기타·베이스·드럼·키보드·보컬 등 밴드 구성으로 다양한 장르의 음악을 연주하는 동아리입니다. 매 학기 정기 공연과 교내 행사 공연을 진행합니다.', activities:['정기 공연 (매 학기)','교내 행사 공연','합주 연습','악기별 레슨'], targets:['악기 연주 가능한 학생','밴드 음악을 좋아하는 학생','보컬 지원 가능'], instagram:'@hongik_band', imageUrl:'' },
+  { id:3, name:'홍익농구', category:'스포츠분과', room:'체육관', desc:'농구를 즐기고 실력을 키우는 동아리', president:'이준혁', contact:'010-0000-0003', recruitPeriod:'상시 모집', meetingSchedule:'매주 토 14:00', intro:'홍익농구는 농구를 좋아하는 학생들이 모여 함께 운동하고 친목을 도모하는 동아리입니다. 초보자도 환영하며, 교내외 대회에도 참가합니다.', activities:['정기 연습 (매주)','학교 농구 리그 참가','친선 경기','농구 기초 교육'], targets:['농구를 좋아하는 누구나','초보자도 환영','규칙적으로 참여 가능한 학생'], instagram:'@hongik_basketball', imageUrl:'' },
+  { id:4, name:'홍익축구', category:'스포츠분과', room:'운동장', desc:'축구 경기 및 친선 대회 참여 동아리', president:'박성민', contact:'010-0000-0004', recruitPeriod:'매 학기 초 모집', meetingSchedule:'매주 일 10:00', intro:'홍익축구는 축구를 사랑하는 학생들의 동아리입니다. 정기 연습과 대회 참가를 통해 실력을 향상시키고 팀워크를 키웁니다.', activities:['정기 연습 (매주)','교내 축구 대회','타 대학 친선 경기','풋살 대회 참가'], targets:['축구를 좋아하는 누구나','초보자도 환영'], instagram:'@hongik_soccer', imageUrl:'' },
+  { id:5, name:'홍익등산', category:'레저분과', room:'B동 302호', desc:'주말 등산 및 자연 탐방 동아리', president:'최서연', contact:'010-0000-0005', recruitPeriod:'상시 모집', meetingSchedule:'격주 토 06:00 (산행)', intro:'홍익등산은 자연 속에서 건강을 찾는 동아리입니다. 서울 근교 명산부터 전국 유명 산까지 함께 오르며 친목을 다집니다.', activities:['정기 산행 (격주)','국내 유명 산 탐방','MTB·트레킹 병행','산행 후 뒤풀이'], targets:['등산을 좋아하는 누구나','자연을 사랑하는 학생','체력에 관계없이 참여 가능'], instagram:'@hongik_hiking', imageUrl:'' },
+  { id:6, name:'홍익CCC', category:'종교분과', room:'G동 201호', desc:'기독교 신앙 공동체 동아리', president:'정다은', contact:'010-0000-0006', recruitPeriod:'상시 모집', meetingSchedule:'매주 목 18:00', intro:'홍익CCC는 기독교 신앙을 바탕으로 함께 성장하는 공동체입니다. 예배·성경공부·봉사활동을 통해 신앙과 인성을 키워갑니다.', activities:['주간 예배','성경 공부','봉사 활동','수련회'], targets:['기독교 신앙에 관심 있는 학생','종교 관계없이 관심 있는 누구나'], instagram:'@hongik_ccc', imageUrl:'' },
+  { id:7, name:'홍익봉사', category:'사회분과', room:'G동 105호', desc:'지역 사회 봉사 활동을 하는 동아리', president:'임지우', contact:'010-0000-0007', recruitPeriod:'매 학기 초 모집', meetingSchedule:'매월 2·4주 토 10:00', intro:'홍익봉사는 지역 사회에 기여하는 다양한 봉사 활동을 운영하는 동아리입니다. 아동센터·노인복지관·환경봉사 등 다양한 분야에서 활동합니다.', activities:['지역 아동센터 교육 봉사','노인복지관 방문','환경 정화 활동','헌혈 캠페인'], targets:['봉사에 관심 있는 누구나','사회 기여를 원하는 학생'], instagram:'@hongik_volunteer', imageUrl:'' },
+  { id:8, name:'홍익영어토론', category:'학술분과', room:'E동 401호', desc:'영어로 토론하고 스피킹 실력을 키우는 동아리', president:'강현우', contact:'010-0000-0008', recruitPeriod:'매 학기 초 모집', meetingSchedule:'매주 화 19:00', intro:'홍익영어토론은 영어 토론을 통해 글로벌 커뮤니케이션 능력을 키우는 동아리입니다. 시사 이슈를 영어로 토론하며 스피킹과 논리력을 향상시킵니다.', activities:['주간 영어 토론','TESOL 특강','영어 모의 UN','스피치 대회 참가'], targets:['영어 토론에 관심 있는 학생','초·중·고급 모두 환영','TOEIC·토플 준비생'], instagram:'@hongik_debate', imageUrl:'' },
+  { id:9, name:'홍익사진', category:'전시분과', room:'F동 503호', desc:'사진 촬영 및 전시회를 개최하는 동아리', president:'윤지아', contact:'010-0000-0009', recruitPeriod:'매 학기 초 모집', meetingSchedule:'매주 금 17:00', intro:'홍익사진은 사진에 관심 있는 학생들이 모여 촬영 기술을 연마하고 작품을 공유하는 동아리입니다. 매 학기 정기 전시회를 개최합니다.', activities:['정기 사진전 (매 학기)','출사 (교내·외)','사진 편집 워크숍','공모전 참가'], targets:['사진에 관심 있는 누구나','DSLR·미러리스·스마트폰 모두 가능','입문자 환영'], instagram:'@hongik_photo', imageUrl:'' },
+];
 const defaultElection = [
   { id:'1', title:'[공고] 제40대 총동아리연합회 임원 선거 일정 공고', content:'', date:'2025-11-01', status:'예정' },
   { id:'2', title:'[공고] 제39대 총동아리연합회 임원 선거 당선자 발표', content:'', date:'2024-11-20', status:'완료' },
@@ -209,6 +220,23 @@ function compressImage(file, maxW = 400) {
   });
 }
 
+function downloadFile(url, name) {
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  a.click();
+}
+
+function openAsBlob(att) {
+  const parts = att.url.split(',');
+  const mime = parts[0].split(':')[1].split(';')[0];
+  const binary = atob(parts[1]);
+  const arr = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) arr[i] = binary.charCodeAt(i);
+  const blob = new Blob([arr], { type: mime });
+  window.open(URL.createObjectURL(blob), '_blank');
+}
+
 /* ──────────────────────────────────────────────
    getter / setter (local-store.ts 동일)
 ────────────────────────────────────────────── */
@@ -233,9 +261,20 @@ const Store = {
   saveCalendarEvents: v  => dbSet('hn_calendar_events', v),
   getClubs: async () => {
     const data = await dbGet('hn_clubs', []);
+    if (data.length === 0) {
+      const seeded = defaultClubs.map(c => ({ ...c, instagram: c.instagram || '', imageUrl: '' }));
+      await dbSet('hn_clubs', seeded);
+      return seeded;
+    }
     return data;
   },
   saveClubs: v => dbSet('hn_clubs', v),
+  getProvisionalClubs:  () => dbGet('hn_provisional_clubs', []),
+  saveProvisionalClubs: v  => dbSet('hn_provisional_clubs', v),
+  getNoticeAttachment: async id => { const v = await dbGetStr(`hn_att_${id}`); return v ? JSON.parse(v) : null; },
+  saveNoticeAttachment: (id, att) => dbSetStr(`hn_att_${id}`, JSON.stringify({ name: att.name, type: att.type, url: att.url })),
+  getNoticeImages: async id => { const v = await dbGetStr(`hn_imgs_${id}`); return v ? JSON.parse(v) : []; },
+  saveNoticeImages: (id, images) => dbSetStr(`hn_imgs_${id}`, JSON.stringify(images)),
   getLogo: async () => {
     localStorage.removeItem('hn_logo');
     return dbGetStr('hn_logo');
@@ -262,6 +301,8 @@ const Store = {
   getHoliday,
   readFileAsBase64,
   compressImage,
+  downloadFile,
+  openAsBlob,
 };
 
 /* ──────────────────────────────────────────────
@@ -277,6 +318,7 @@ const NAV_ITEMS = [
   ]},
   { title:'동아리 소개', href:'/clubs/central', submenu:[
     { title:'중앙동아리', href:'/clubs/central' },
+    { title:'가동아리', href:'/clubs/provisional' },
     { title:'동아리방 위치', href:'/clubs/location' },
   ]},
   { title:'소식마당', href:'/news/notices', submenu:[
@@ -379,11 +421,18 @@ async function initNav() {
   // 푸터
   const footer = document.getElementById('site-footer');
   if (footer) {
+    footer.className = 'bg-gray-700 text-gray-300 py-6 mt-4';
     footer.innerHTML = `
-      <div class="max-w-7xl mx-auto px-6 py-8 text-center text-gray-500 text-sm">
-        <div class="font-semibold text-gray-700 mb-1">${content.footerTitle || '홍익대학교 총동아리연합회'}</div>
-        <div>${content.locationAddress || ''}</div>
-        <div class="mt-2 text-xs">${content.footerCopyright || '© 2025 홍익대학교 총동아리연합회'}</div>
+      <div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-3">
+        <div>
+          <p class="text-sm font-semibold text-white">${content.footerTitle || '홍익대학교 총동아리연합회'}</p>
+          <p class="text-xs mt-1">위치: ${content.locationAddress || ''} · 이메일: ${content.locationEmail || ''}</p>
+          <p class="text-xs mt-0.5">${content.footerCopyright || '© 2026 홍익대학교 총동아리연합회 Union. All rights reserved.'}</p>
+        </div>
+        <div class="flex flex-col items-end gap-1">
+          <a href="/admin" class="text-xs text-gray-400 hover:text-white transition-colors">관리자 페이지</a>
+          <a href="https://www.hongik.ac.kr/kr/etc/privacy-policy.do" target="_blank" rel="noopener noreferrer" class="text-xs text-gray-300 hover:text-white underline underline-offset-2 inline-block transition-colors">개인정보 처리방침</a>
+        </div>
       </div>
     `;
   }

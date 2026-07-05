@@ -1,69 +1,103 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('공지사항')}"></head>
-<body class="bg-gray-100 min-h-screen">
+<body class="min-h-screen" style="background:#e8e8e8">
 <div th:replace="~{fragments/nav :: nav}"></div>
-<main class="max-w-4xl mx-auto px-6 py-10">
-  <h1 class="text-2xl font-black text-gray-900 mb-6">공지사항</h1>
-  <div class="bg-white rounded-xl shadow-sm overflow-hidden" id="notice-list"></div>
-
-  <!-- 상세 모달 -->
-  <div id="modal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/50" onclick="closeModal()"></div>
-    <div class="relative max-w-2xl mx-auto mt-20 bg-white rounded-xl shadow-xl overflow-hidden max-h-[80vh] flex flex-col">
-      <div class="flex items-center justify-between px-6 py-4 border-b">
-        <h2 id="modal-title" class="font-bold text-gray-900 text-lg"></h2>
-        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">✕</button>
-      </div>
-      <div class="px-6 py-4 overflow-y-auto flex-1">
-        <p id="modal-date" class="text-xs text-gray-400 mb-4"></p>
-        <div id="modal-images" class="space-y-3 mb-4"></div>
-        <p id="modal-content" class="text-gray-700 text-sm leading-relaxed whitespace-pre-line"></p>
-        <div id="modal-attach" class="mt-4 hidden">
-          <a id="modal-attach-link" href="#" class="inline-flex items-center gap-2 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm text-gray-700">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
-            <span id="modal-attach-name"></span>
-          </a>
-        </div>
-      </div>
-    </div>
+<div th:replace="~{fragments/subheader :: news('notices')}"></div>
+<div class="page-content">
+  <div class="flex items-center justify-between mb-6 sr-base" data-sr="fade-up">
+    <h2 class="text-2xl font-bold text-gray-800">공지사항</h2>
+    <span id="notice-count" class="text-sm text-gray-400"></span>
   </div>
-</main>
+  <div id="notice-body"></div>
+</div>
 <footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
 <script>
-async function openModal(notice) {
-  document.getElementById('modal-title').textContent = notice.title;
-  document.getElementById('modal-date').textContent = notice.createdAt;
-  document.getElementById('modal-content').textContent = notice.content;
-  const imgEl = document.getElementById('modal-images');
-  imgEl.innerHTML = '';
-  if(notice.imageUrl) imgEl.innerHTML = `<img src="${notice.imageUrl}" class="w-full rounded-lg">`;
-  const att = document.getElementById('modal-attach');
-  if(notice.attachment) {
-    att.classList.remove('hidden');
-    document.getElementById('modal-attach-link').href = notice.attachment.url;
-    document.getElementById('modal-attach-link').download = notice.attachment.name;
-    document.getElementById('modal-attach-name').textContent = notice.attachment.name;
-  } else { att.classList.add('hidden'); }
-  document.getElementById('modal').classList.remove('hidden');
+let notices = [];
+
+async function showList() {
+  document.getElementById('notice-body').innerHTML = `
+    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+      <table class="data-table">
+        <thead><tr><th class="w-12 text-center">번호</th><th>제목</th><th class="w-28 hidden md:table-cell text-center">날짜</th></tr></thead>
+        <tbody id="notice-rows"></tbody>
+      </table>
+    </div>`;
+
+  const pinned = notices.filter(n => n.isPinned);
+  const normal = notices.filter(n => !n.isPinned);
+  const ordered = [...pinned, ...normal];
+  const rows = document.getElementById('notice-rows');
+  rows.innerHTML = ordered.length ? ordered.map((n, idx) => `
+    <tr class="cursor-pointer hover:bg-blue-50" data-id="${n.id}">
+      <td class="text-center text-gray-400 text-sm">${n.isPinned ? '📌' : ordered.length - idx}</td>
+      <td>
+        <div class="flex items-center gap-2 flex-wrap">
+          ${n.isPinned ? '<span class="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded font-medium">고정</span>' : ''}
+          <span class="font-medium text-gray-800 text-sm">${n.title}</span>
+          ${n.attachment ? '<span class="text-xs text-blue-400">📎</span>' : ''}
+          ${(n.hasImages || n.imageUrl) ? '<span class="text-xs text-gray-400">🖼️</span>' : ''}
+        </div>
+      </td>
+      <td class="text-center text-gray-400 text-xs hidden md:table-cell">${n.createdAt}</td>
+    </tr>`).join('') : '<tr><td colspan="3" class="text-center text-gray-400 py-10">등록된 공지사항이 없습니다</td></tr>';
+
+  rows.querySelectorAll('tr[data-id]').forEach(tr => {
+    tr.addEventListener('click', () => showDetail(notices.find(n => n.id === tr.dataset.id)));
+  });
 }
-function closeModal() { document.getElementById('modal').classList.add('hidden'); }
+
+async function showDetail(notice) {
+  let attachment = notice.attachment && notice.attachment.stored
+    ? await Store.getNoticeAttachment(notice.id)
+    : notice.attachment || null;
+  let images = notice.hasImages
+    ? await Store.getNoticeImages(notice.id)
+    : (notice.imageUrl ? [notice.imageUrl] : []);
+
+  const isHwp = attachment && /\.(hwp|hwpx)$/i.test(attachment.name);
+
+  document.getElementById('notice-body').innerHTML = `
+    <div class="bg-white rounded-xl border border-gray-200 p-6">
+      <button id="back-btn" class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 mb-5 transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        목록으로
+      </button>
+      <div class="flex items-center gap-2 mb-1 flex-wrap">
+        ${notice.isPinned ? '<span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">고정</span>' : ''}
+        <h3 class="text-xl font-bold text-gray-800">${notice.title}</h3>
+      </div>
+      <p class="text-sm text-gray-400 mb-4">${notice.createdAt}</p>
+      ${attachment ? `
+        <div class="mb-5 flex items-center gap-2 flex-wrap">
+          <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+          <span class="text-sm text-gray-700 font-medium">${attachment.name}</span>
+          ${isHwp ? `<button id="att-open" class="px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition-colors">열기</button>` : ''}
+          <button id="att-download" class="px-3 py-1.5 bg-gray-800 text-white text-xs font-semibold rounded-lg hover:bg-gray-700 transition-colors">다운로드</button>
+        </div>` : ''}
+      <div class="text-gray-700 leading-relaxed whitespace-pre-wrap text-sm border-t border-gray-100 pt-5">${notice.content || '내용이 없습니다.'}</div>
+      ${images.length ? `
+        <div class="mt-6 space-y-4 border-t border-gray-100 pt-6">
+          ${images.map(src => `<img src="${src}" alt="이미지" class="w-full rounded-xl border border-gray-100 object-contain">`).join('')}
+        </div>` : ''}
+    </div>`;
+
+  document.getElementById('back-btn').addEventListener('click', showList);
+  if (attachment) {
+    const dl = document.getElementById('att-download');
+    if (dl) dl.addEventListener('click', () => Store.downloadFile(attachment.url, attachment.name));
+    const op = document.getElementById('att-open');
+    if (op) op.addEventListener('click', () => Store.openAsBlob(attachment));
+  }
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
   await Store.initNav();
-  const notices = await Store.getNotices();
-  const nl = document.getElementById('notice-list');
-  nl.innerHTML = notices.length ? notices.map((n,i)=>`
-    <div onclick="openNotice(${i})" class="flex items-center gap-3 px-5 py-4 hover:bg-gray-50 transition-colors cursor-pointer ${i<notices.length-1?'border-b border-gray-100':''}">
-      ${n.isPinned?'<span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-bold flex-shrink-0">고정</span>':''}
-      <span class="flex-1 text-gray-800 font-medium">${n.title}</span>
-      <span class="text-xs text-gray-400 flex-shrink-0">${n.createdAt}</span>
-    </div>`).join('') : '<div class="p-12 text-center text-gray-400">공지사항이 없습니다</div>';
-
-  window.notices = notices;
+  notices = await Store.getNotices();
+  notices.forEach(n => { if (n.hasImages) Store.getNoticeImages(n.id); });
+  document.getElementById('notice-count').textContent = `총 ${notices.length}건`;
+  showList();
 });
-
-function openNotice(i) { openModal(window.notices[i]); }
 </script>
 </body>
 </html>

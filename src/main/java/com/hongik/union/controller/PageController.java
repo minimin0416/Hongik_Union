@@ -14,8 +14,11 @@ public class PageController {
     @GetMapping("/about/location") public String aboutLocation() { return "about/location"; }
     @GetMapping("/about/rules")    public String aboutRules()    { return "about/rules"; }
 
-    @GetMapping("/clubs/central")  public String clubsCentral()  { return "clubs/central"; }
-    @GetMapping("/clubs/location") public String clubsLocation() { return "clubs/location"; }
+    @GetMapping("/clubs/central")         public String clubsCentral()        { return "clubs/central"; }
+    @GetMapping("/clubs/central/{id}")    public String clubsCentralDetail()  { return "clubs/central-detail"; }
+    @GetMapping("/clubs/provisional")     public String clubsProvisional()    { return "clubs/provisional"; }
+    @GetMapping("/clubs/provisional/{id}") public String clubsProvisionalDetail() { return "clubs/provisional-detail"; }
+    @GetMapping("/clubs/location")        public String clubsLocation()       { return "clubs/location"; }
 
     @GetMapping("/news/notices")   public String newsNotices()   { return "news/notices"; }
     @GetMapping("/news/calendar")  public String newsCalendar()  { return "news/calendar"; }
