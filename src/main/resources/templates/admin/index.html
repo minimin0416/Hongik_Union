@@ -2,32 +2,49 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('관리자')}"></head>
 <body class="bg-gray-100 min-h-screen">
+<div th:replace="~{fragments/nav :: nav}"></div>
+
 <!-- 비밀번호 화면 -->
-<div id="login-screen" class="min-h-screen flex items-center justify-center">
-  <div class="bg-white rounded-2xl shadow-xl p-10 w-full max-w-sm">
-    <h1 class="text-xl font-black text-gray-900 mb-6 text-center">관리자 로그인</h1>
-    <input id="pw-input" type="password" placeholder="비밀번호" class="w-full border border-gray-200 rounded-lg px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-gray-300" onkeydown="if(event.key==='Enter')checkPw()">
-    <button onclick="checkPw()" class="w-full py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-700 active:scale-95 transition-all">로그인</button>
-    <p id="pw-err" class="text-red-500 text-xs text-center mt-3 hidden">비밀번호가 틀렸습니다</p>
+<div id="login-screen" class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+  <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm">
+    <div class="text-center mb-6">
+      <div class="w-14 h-14 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-3">
+        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      </div>
+      <h1 class="text-xl font-bold text-gray-800">관리자 로그인</h1>
+      <p class="text-gray-400 text-sm mt-1">총동아리연합회 관리자 페이지</p>
+    </div>
+    <input id="pw-input" type="password" placeholder="비밀번호" class="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 text-sm focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-200" onkeydown="if(event.key==='Enter')checkPw()">
+    <button onclick="checkPw()" class="w-full bg-gray-800 text-white py-3 rounded-lg font-semibold hover:bg-gray-700 transition-colors">로그인</button>
+    <p id="pw-err" class="text-red-500 text-sm mt-3 hidden">비밀번호가 올바르지 않습니다.</p>
   </div>
 </div>
 
 <!-- 관리자 본문 -->
-<div id="admin-screen" class="hidden">
-<div th:replace="~{fragments/nav :: nav}"></div>
-<div class="max-w-7xl mx-auto px-4 py-8">
-
-<!-- 탭 -->
-<div class="flex gap-2 mb-6 overflow-x-auto pb-2">
-  <button class="tab-btn active" onclick="setTab('about')">총동아리연합회</button>
-  <button class="tab-btn" onclick="setTab('clubs')">동아리</button>
-  <button class="tab-btn" onclick="setTab('news')">소식마당</button>
-  <button class="tab-btn" onclick="setTab('info')">정보마당</button>
-  <button class="tab-btn" onclick="setTab('election')">선거</button>
-  <button class="tab-btn" onclick="setTab('contact')">문의</button>
-  <button class="tab-btn" onclick="setTab('images')">이미지</button>
-  <button class="tab-btn" onclick="setTab('settings')">사이트 설정</button>
+<div id="admin-screen" class="hidden bg-gray-100 min-h-screen">
+<div class="bg-gray-800 px-6 py-3.5 flex items-center justify-between flex-wrap gap-3">
+  <div class="flex items-center gap-3">
+    <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center"><span class="text-gray-800 font-black text-sm">홍</span></div>
+    <div class="text-white"><div class="font-bold text-sm">관리자 페이지</div><div class="text-gray-400 text-xs">총동아리연합회</div></div>
+  </div>
+  <div class="flex items-center gap-3">
+    <button id="sync-btn" onclick="syncAll()" class="text-xs px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-medium transition-colors">☁️ 전체 동기화</button>
+    <button onclick="adminLogout()" class="text-gray-400 hover:text-white text-sm transition-colors">로그아웃</button>
+  </div>
 </div>
+<div class="bg-white border-b border-gray-200 overflow-x-auto">
+  <div class="flex min-w-max px-4">
+    <button class="tab-btn2 active" onclick="setTab('about')">🏫 총동아리연합회</button>
+    <button class="tab-btn2" onclick="setTab('clubs')">🎯 동아리 소개</button>
+    <button class="tab-btn2" onclick="setTab('news')">📢 소식마당</button>
+    <button class="tab-btn2" onclick="setTab('info')">📁 정보마당</button>
+    <button class="tab-btn2" onclick="setTab('election')">🗳️ 선거관리위원회</button>
+    <button class="tab-btn2" onclick="setTab('contact')">✉️ 문의사항</button>
+    <button class="tab-btn2" onclick="setTab('images')">🖼️ 이미지</button>
+    <button class="tab-btn2" onclick="setTab('settings')">⚙️ 설정</button>
+  </div>
+</div>
+<div class="max-w-7xl mx-auto px-4 py-8">
 
 <!-- 총동아리연합회 탭 -->
 <div id="tab-about" class="tab-panel space-y-6">
@@ -67,11 +84,12 @@
 <!-- 동아리 탭 -->
 <div id="tab-clubs" class="tab-panel hidden space-y-4">
   <div class="flex gap-2">
-    <button class="subtab-btn active" onclick="setSubtab('clubs','list')">동아리 목록</button>
+    <button class="subtab-btn active" onclick="setSubtab('clubs','list')">중앙동아리</button>
+    <button class="subtab-btn" onclick="setSubtab('clubs','provisional')">가동아리</button>
     <button class="subtab-btn" onclick="setSubtab('clubs','location')">동아리방 위치</button>
   </div>
   <div id="subtab-clubs-list">
-    <div class="flex justify-end mb-3"><button onclick="showClubForm(null)" class="admin-add-btn">+ 동아리 추가</button></div>
+    <div class="flex justify-end mb-3"><button onclick="showClubForm(null)" class="admin-add-btn">+ 중앙동아리 추가</button></div>
     <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
       <table class="w-full text-sm">
         <thead class="bg-gray-50 border-b border-gray-200"><tr>
@@ -104,6 +122,43 @@
       <div class="flex gap-2">
         <button onclick="saveClub()" class="admin-save-btn">저장</button>
         <button onclick="document.getElementById('club-form').classList.add('hidden')" class="px-4 py-2 border border-gray-200 text-sm rounded-lg hover:bg-gray-50">취소</button>
+      </div>
+    </div>
+  </div>
+  <div id="subtab-clubs-provisional" class="hidden">
+    <div class="flex justify-end mb-3"><button onclick="showPClubForm(null)" class="admin-add-btn">+ 가동아리 추가</button></div>
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 border-b border-gray-200"><tr>
+          <th class="text-left px-4 py-3 font-semibold text-gray-600">이름</th>
+          <th class="text-left px-4 py-3 font-semibold text-gray-600">분류</th>
+          <th class="text-left px-4 py-3 font-semibold text-gray-600">회장</th>
+          <th class="px-4 py-3"></th>
+        </tr></thead>
+        <tbody id="pclubs-table-body"></tbody>
+      </table>
+    </div>
+    <div id="pclub-form" class="hidden bg-white rounded-xl border border-gray-200 p-6 mt-4">
+      <h3 class="font-bold text-gray-800 mb-4" id="pclub-form-title">가동아리 추가</h3>
+      <input type="hidden" id="pcf-id">
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div><label class="block text-sm text-gray-600 mb-1">동아리명 *</label><input id="pcf-name" type="text" class="admin-input"></div>
+        <div><label class="block text-sm text-gray-600 mb-1">분류</label><input id="pcf-category" type="text" class="admin-input" placeholder="예: 문화예술, 체육"></div>
+        <div><label class="block text-sm text-gray-600 mb-1">동아리방</label><input id="pcf-room" type="text" class="admin-input"></div>
+        <div><label class="block text-sm text-gray-600 mb-1">회장</label><input id="pcf-president" type="text" class="admin-input"></div>
+        <div><label class="block text-sm text-gray-600 mb-1">모집기간</label><input id="pcf-recruit" type="text" class="admin-input"></div>
+        <div><label class="block text-sm text-gray-600 mb-1">정기모임</label><input id="pcf-meeting" type="text" class="admin-input"></div>
+      </div>
+      <div class="mb-4"><label class="block text-sm text-gray-600 mb-1">한줄소개</label><input id="pcf-intro" type="text" class="admin-input"></div>
+      <div class="mb-4"><label class="block text-sm text-gray-600 mb-1">상세설명</label><textarea id="pcf-desc" rows="3" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none"></textarea></div>
+      <div class="mb-4">
+        <label class="block text-sm text-gray-600 mb-1">동아리 이미지</label>
+        <div id="pcf-img-preview" class="mb-2 hidden"><img id="pcf-img-preview-img" class="h-24 rounded-lg object-contain"></div>
+        <input type="file" id="pcf-img" accept="image/*" onchange="previewPClubImg(this)">
+      </div>
+      <div class="flex gap-2">
+        <button onclick="savePClub()" class="admin-save-btn">저장</button>
+        <button onclick="document.getElementById('pclub-form').classList.add('hidden')" class="px-4 py-2 border border-gray-200 text-sm rounded-lg hover:bg-gray-50">취소</button>
       </div>
     </div>
   </div>
@@ -395,6 +450,14 @@
     <div><label class="block text-sm text-gray-600 mb-1">저작권 문구</label><input id="st-footer-copy" type="text" class="admin-input"></div>
     <button onclick="saveSettings()" class="admin-save-btn">저장</button>
   </div>
+  <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+    <h2 class="font-bold text-gray-800">관리자 비밀번호 변경</h2>
+    <div><label class="block text-sm text-gray-600 mb-1">현재 비밀번호</label><input id="pw-current" type="password" class="admin-input"></div>
+    <div><label class="block text-sm text-gray-600 mb-1">새 비밀번호</label><input id="pw-new" type="password" class="admin-input" placeholder="6자 이상"></div>
+    <div><label class="block text-sm text-gray-600 mb-1">새 비밀번호 확인</label><input id="pw-confirm" type="password" class="admin-input" placeholder="동일하게 입력"></div>
+    <p id="pw-change-msg" class="text-sm hidden"></p>
+    <button onclick="changeAdminPassword()" class="admin-save-btn">비밀번호 변경</button>
+  </div>
 </div>
 
 </div><!-- end admin-screen inner -->
@@ -404,6 +467,9 @@
 <style>
 .tab-btn { padding:.5rem 1rem; border-radius:.5rem; font-size:.875rem; font-weight:600; white-space:nowrap; background:white; border:1px solid #e5e7eb; color:#6b7280; cursor:pointer; transition:all .15s; }
 .tab-btn.active { background:#111827; color:white; border-color:#111827; }
+.tab-btn2 { padding:.875rem 1rem; font-size:.875rem; font-weight:500; white-space:nowrap; background:transparent; border:none; border-bottom:2px solid transparent; color:#6b7280; cursor:pointer; transition:all .15s; }
+.tab-btn2.active { border-bottom-color:#1f2937; color:#1f2937; }
+.tab-btn2:hover { color:#374151; }
 .subtab-btn { padding:.375rem .875rem; border-radius:.5rem; font-size:.8125rem; font-weight:500; background:white; border:1px solid #e5e7eb; color:#6b7280; cursor:pointer; }
 .subtab-btn.active { background:#374151; color:white; border-color:#374151; }
 .admin-save-btn { padding:.5rem 1.25rem; background:#111827; color:white; border-radius:.5rem; font-size:.875rem; font-weight:500; cursor:pointer; transition:all .15s; }
@@ -414,19 +480,97 @@
 </style>
 
 <script>
-const ADMIN_PW = 'hongik2025';
-let siteContent = {};
-let selectedColor = '#3B82F6';
-
-function checkPw() {
-  const pw = document.getElementById('pw-input').value;
-  if(pw === ADMIN_PW) {
+let currentAdminPw = 'hongik2025';
+Store.getAdminPassword().then(pw => {
+  currentAdminPw = pw;
+  if (localStorage.getItem('admin_session') === 'true') {
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('admin-screen').classList.remove('hidden');
     initAdmin();
+    resetIdleTimer();
+  }
+});
+let siteContent = {};
+let selectedColor = '#3B82F6';
+let idleTimer = null;
+const IDLE_TIMEOUT_MS = 10 * 60 * 1000;
+
+function resetIdleTimer() {
+  if (idleTimer) clearTimeout(idleTimer);
+  idleTimer = setTimeout(adminLogout, IDLE_TIMEOUT_MS);
+}
+['mousemove','mousedown','keydown','touchstart','scroll'].forEach(evt =>
+  window.addEventListener(evt, () => { if (localStorage.getItem('admin_session') === 'true') resetIdleTimer(); })
+);
+
+function checkPw() {
+  const pw = document.getElementById('pw-input').value;
+  if(pw === currentAdminPw) {
+    localStorage.setItem('admin_session', 'true');
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('admin-screen').classList.remove('hidden');
+    initAdmin();
+    resetIdleTimer();
   } else {
     document.getElementById('pw-err').classList.remove('hidden');
   }
+}
+
+function adminLogout() {
+  if (idleTimer) clearTimeout(idleTimer);
+  localStorage.removeItem('admin_session');
+  document.getElementById('pw-input').value = '';
+  document.getElementById('admin-screen').classList.add('hidden');
+  document.getElementById('login-screen').classList.remove('hidden');
+}
+
+async function syncAll() {
+  const btn = document.getElementById('sync-btn');
+  btn.disabled = true;
+  btn.textContent = '동기화 중...';
+  const keys = Object.keys(localStorage).filter(k => k.startsWith('hn_'));
+  await Promise.all(keys.map(async key => {
+    const value = localStorage.getItem(key);
+    if (!value) return;
+    await fetch('/api/data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key, value }),
+    });
+  }));
+  btn.textContent = '✓ 완료';
+  setTimeout(() => { btn.textContent = '☁️ 전체 동기화'; btn.disabled = false; }, 3000);
+}
+
+async function changeAdminPassword() {
+  const cur = document.getElementById('pw-current').value;
+  const next = document.getElementById('pw-new').value;
+  const confirm = document.getElementById('pw-confirm').value;
+  const msgEl = document.getElementById('pw-change-msg');
+  msgEl.classList.remove('hidden');
+
+  if (cur !== currentAdminPw) {
+    msgEl.textContent = '현재 비밀번호가 일치하지 않습니다.';
+    msgEl.className = 'text-sm text-red-600';
+    return;
+  }
+  if (next.length < 6) {
+    msgEl.textContent = '새 비밀번호는 6자 이상이어야 합니다.';
+    msgEl.className = 'text-sm text-red-600';
+    return;
+  }
+  if (next !== confirm) {
+    msgEl.textContent = '새 비밀번호가 서로 일치하지 않습니다.';
+    msgEl.className = 'text-sm text-red-600';
+    return;
+  }
+  await Store.saveAdminPassword(next);
+  currentAdminPw = next;
+  document.getElementById('pw-current').value = '';
+  document.getElementById('pw-new').value = '';
+  document.getElementById('pw-confirm').value = '';
+  msgEl.textContent = '비밀번호가 변경되었습니다.';
+  msgEl.className = 'text-sm text-green-600';
 }
 
 async function initAdmin() {
@@ -439,9 +583,9 @@ async function initAdmin() {
 }
 
 function setTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-btn2').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.add('hidden'));
-  event.target.classList.add('active');
+  event.currentTarget.classList.add('active');
   document.getElementById(`tab-${tab}`).classList.remove('hidden');
   if(tab==='clubs') loadClubsTab();
   if(tab==='news') { loadNewsTab(); setSubtab('news','notices'); }
@@ -493,9 +637,86 @@ let clubs = [];
 async function loadClubsTab() {
   clubs = await Store.getClubs();
   renderClubsTable();
+  pclubs = await Store.getProvisionalClubs();
+  renderPClubsTable();
   const mp = await Store.getClubMapImage();
   if(mp) document.getElementById('club-map-preview').innerHTML = `<img src="${mp}" class="max-h-full max-w-full object-contain">`;
   renderBuildingsList();
+}
+
+/* ── 가동아리 (동아리 탭 서브) ── */
+let pclubs = [];
+function renderPClubsTable() {
+  const tb = document.getElementById('pclubs-table-body');
+  tb.innerHTML = pclubs.length ? pclubs.map((c,i)=>`
+    <tr class="border-b border-gray-100 hover:bg-gray-50">
+      <td class="px-4 py-3 text-sm font-medium">${c.name}</td>
+      <td class="px-4 py-3 text-sm text-gray-500">${c.category||''}</td>
+      <td class="px-4 py-3 text-sm text-gray-500">${c.president||''}</td>
+      <td class="px-4 py-3 text-right">
+        <button onclick="showPClubForm(${i})" class="text-xs text-blue-600 hover:underline mr-2">수정</button>
+        <button onclick="deletePClub(${i})" class="text-xs text-red-500 hover:underline">삭제</button>
+      </td>
+    </tr>`).join('') : '<tr><td colspan="4" class="text-center text-gray-400 py-8 text-sm">등록된 가동아리가 없습니다</td></tr>';
+}
+function showPClubForm(idx) {
+  const form = document.getElementById('pclub-form');
+  form.classList.remove('hidden');
+  form.scrollIntoView({behavior:'smooth'});
+  if(idx===null) {
+    document.getElementById('pclub-form-title').textContent = '가동아리 추가';
+    document.getElementById('pcf-id').value = '';
+    ['name','category','room','president','recruit','meeting','intro','desc'].forEach(f=>document.getElementById(`pcf-${f}`).value='');
+    document.getElementById('pcf-img-preview').classList.add('hidden');
+  } else {
+    const c = pclubs[idx];
+    document.getElementById('pclub-form-title').textContent = '가동아리 수정';
+    document.getElementById('pcf-id').value = idx;
+    document.getElementById('pcf-name').value = c.name||'';
+    document.getElementById('pcf-category').value = c.category||'';
+    document.getElementById('pcf-room').value = c.room||'';
+    document.getElementById('pcf-president').value = c.president||'';
+    document.getElementById('pcf-recruit').value = c.recruitPeriod||'';
+    document.getElementById('pcf-meeting').value = c.meetingSchedule||'';
+    document.getElementById('pcf-intro').value = c.intro||'';
+    document.getElementById('pcf-desc').value = c.desc||'';
+    if(c.imageUrl) { document.getElementById('pcf-img-preview').classList.remove('hidden'); document.getElementById('pcf-img-preview-img').src=c.imageUrl; }
+    else document.getElementById('pcf-img-preview').classList.add('hidden');
+  }
+}
+async function previewPClubImg(input) {
+  if(!input.files[0]) return;
+  const r = await Store.readFileAsBase64(input.files[0]);
+  document.getElementById('pcf-img-preview').classList.remove('hidden');
+  document.getElementById('pcf-img-preview-img').src = r.url;
+}
+async function savePClub() {
+  const idx = document.getElementById('pcf-id').value;
+  const imgFile = document.getElementById('pcf-img').files[0];
+  let imageUrl = idx!=='' ? pclubs[parseInt(idx)].imageUrl||'' : '';
+  if(imgFile) { const r = await Store.readFileAsBase64(imgFile); imageUrl = r.url; }
+  const club = {
+    id: idx!=='' ? pclubs[parseInt(idx)].id : Date.now(),
+    name: document.getElementById('pcf-name').value,
+    category: document.getElementById('pcf-category').value,
+    room: document.getElementById('pcf-room').value,
+    president: document.getElementById('pcf-president').value,
+    recruitPeriod: document.getElementById('pcf-recruit').value,
+    meetingSchedule: document.getElementById('pcf-meeting').value,
+    intro: document.getElementById('pcf-intro').value,
+    desc: document.getElementById('pcf-desc').value,
+    activities:[], targets:[], imageUrl,
+  };
+  if(idx!=='') pclubs[parseInt(idx)] = club; else pclubs.push(club);
+  await Store.saveProvisionalClubs(pclubs);
+  document.getElementById('pclub-form').classList.add('hidden');
+  renderPClubsTable();
+}
+async function deletePClub(i) {
+  if(!confirm('삭제하시겠습니까?')) return;
+  pclubs.splice(i,1);
+  await Store.saveProvisionalClubs(pclubs);
+  renderPClubsTable();
 }
 function renderClubsTable() {
   const tb = document.getElementById('clubs-table-body');
