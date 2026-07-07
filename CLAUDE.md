@@ -15,7 +15,7 @@
 | 백엔드 프레임워크 | **Spring Boot 3.3** |
 | 템플릿 엔진 | **Thymeleaf** (HTML 페이지 렌더링) |
 | 프론트엔드 | **HTML + CSS + Vanilla JavaScript** (TypeScript 없음) |
-| CSS 프레임워크 | **Tailwind CSS** (CDN) |
+| CSS 프레임워크 | **Tailwind CSS** (사전 컴파일된 정적 CSS, `tailwind.config.js`로 빌드) |
 | 데이터베이스 | **Upstash Redis** (서버리스 Redis) |
 | 배포 | Railway, Render, Fly.io 등 (Java 지원 서버) |
 
@@ -124,6 +124,14 @@ java -jar target/union-backend-0.0.1-SNAPSHOT.jar
 ```
 
 서버 시작 후 `http://localhost:8080` 접속
+
+### Tailwind CSS 재빌드
+
+HTML 템플릿이나 `store.js`에 새로운 Tailwind 클래스를 추가했다면, 정적 CSS 파일을 다시 생성해야 화면에 반영된다 (CDN 방식이 아니라 빌드 시점에 클래스를 스캔해 CSS를 생성하는 방식이기 때문).
+
+```bash
+npx tailwindcss@^3 -i tailwind.input.css -o src/main/resources/static/css/tailwind.css --minify
+```
 
 ---
 
