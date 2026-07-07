@@ -4,9 +4,9 @@
 <footer th:fragment="footer" class="bg-gray-700 text-gray-300 py-6 mt-4">
   <div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-3">
     <div>
-      <p class="text-sm font-semibold text-white" th:text="${#strings.isEmpty(content.footerTitle)} ? '홍익대학교 총동아리연합회' : content.footerTitle">홍익대학교 총동아리연합회</p>
+      <p class="text-sm font-semibold text-white" th:text="${#strings.isEmpty(content.footerTitle)} ? '홍익대학교 총동아리연합회' : ${content.footerTitle}">홍익대학교 총동아리연합회</p>
       <p class="text-xs mt-1">위치: <span th:text="${content.locationAddress}"></span> · 이메일: <span th:text="${content.locationEmail}"></span></p>
-      <p class="text-xs mt-0.5" th:text="${#strings.isEmpty(content.footerCopyright)} ? '© 2026 홍익대학교 총동아리연합회 Union. All rights reserved.' : content.footerCopyright">© 2026 홍익대학교 총동아리연합회 Union. All rights reserved.</p>
+      <p class="text-xs mt-0.5" th:text="${#strings.isEmpty(content.footerCopyright)} ? '© 2026 홍익대학교 총동아리연합회 Union. All rights reserved.' : ${content.footerCopyright}">© 2026 홍익대학교 총동아리연합회 Union. All rights reserved.</p>
     </div>
     <div class="flex flex-col items-end gap-1">
       <a href="/admin" class="text-xs text-gray-400 hover:text-white transition-colors">관리자 페이지</a>
