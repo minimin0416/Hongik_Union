@@ -364,8 +364,7 @@ const NAV_ITEMS = [
 
 async function initNav() {
   const path = window.location.pathname;
-  const content = await Store.getSiteContent();
-  const logo = await Store.getLogo();
+  const [content, logo] = await Promise.all([Store.getSiteContent(), Store.getLogo()]);
 
   // 로고
   const logoText = document.getElementById('logo-text');
