@@ -256,8 +256,23 @@ const Store = {
   saveElection:  v  => dbSet('hn_election', v),
   getInquiries:  () => dbGet('hn_inquiries', []),
   saveInquiries: v  => dbSet('hn_inquiries', v),
-  getBanners:    () => dbGet('hn_banners', ['','','']),
-  saveBanners:   v  => dbSet('hn_banners', v),
+  getBanners: async () => {
+    const countStr = await dbGetStr('hn_banner_count');
+    if (!countStr) {
+      const legacy = await dbGet('hn_banners', null);
+      if (legacy && Array.isArray(legacy) && legacy.some(b => b)) {
+        await Store.saveBanners(legacy);
+        return legacy;
+      }
+      return ['','',''];
+    }
+    const count = parseInt(countStr, 10) || 0;
+    return Promise.all(Array.from({ length: count }, (_, i) => dbGetStr(`hn_banner_${i}`)));
+  },
+  saveBanners: async arr => {
+    await dbSetStr('hn_banner_count', String(arr.length));
+    await Promise.all(arr.map((img, i) => dbSetStr(`hn_banner_${i}`, img || '')));
+  },
   getCalendarEvents:  () => dbGet('hn_calendar_events', []),
   saveCalendarEvents: v  => dbSet('hn_calendar_events', v),
   getClubs: async () => {
