@@ -491,7 +491,7 @@ Store.initNav = initNav;
    안전장치로 3초 뒤에는 무조건 공개한다.
 ────────────────────────────────────────────── */
 function revealPage() { document.body.classList.add('ready'); }
-setTimeout(revealPage, 3000);
+setTimeout(revealPage, 15000);
 Store.reveal = revealPage;
 
 window.Store = Store;
