@@ -1480,8 +1480,8 @@ async function deleteImg(type) {
   else if(type==='location') { await Store.saveLocationImage(''); document.getElementById('location-admin-preview').innerHTML='<span class="text-xs text-gray-400">이미지 없음</span>'; }
 }
 async function uploadBanner(i, input) {
-  const r=await Store.readFileAsBase64(input.files[0]);
-  bannerImgs[i]=r.url;
+  const url=await Store.compressImage(input.files[0], 1600, 'image/jpeg', 0.8);
+  bannerImgs[i]=url;
   await Store.saveBanners([...bannerImgs]);
   renderBannerAdmin();
 }

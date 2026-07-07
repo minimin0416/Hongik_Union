@@ -197,7 +197,7 @@ function readFileAsBase64(file) {
   });
 }
 
-function compressImage(file, maxW = 400) {
+function compressImage(file, maxW = 400, mime = 'image/png', quality = 0.85) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = reject;
@@ -213,7 +213,7 @@ function compressImage(file, maxW = 400) {
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, w, h);
         ctx.drawImage(img, 0, 0, w, h);
-        resolve(canvas.toDataURL('image/png'));
+        resolve(canvas.toDataURL(mime, quality));
       };
       img.src = e.target.result;
     };
