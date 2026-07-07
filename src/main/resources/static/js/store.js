@@ -135,14 +135,15 @@ async function dbGet(key, def) {
     const res = await fetch(`${API}?key=${encodeURIComponent(key)}`);
     if (!res.ok) return def;
     const value = await res.json();
-    if (value !== null) { localStorage.setItem(key, value); return JSON.parse(value); }
-    return def;
+    if (value === null) return def;
+    try { localStorage.setItem(key, value); } catch {}
+    return JSON.parse(value);
   } catch { return def; }
 }
 
 async function dbSet(key, value) {
   const serialized = JSON.stringify(value);
-  localStorage.setItem(key, serialized);
+  try { localStorage.setItem(key, serialized); } catch (e) { try { localStorage.removeItem(key); } catch {} }
   try {
     const res = await fetch(API, {
       method: 'POST',
@@ -167,13 +168,13 @@ async function dbGetStr(key) {
     const res = await fetch(`${API}?key=${encodeURIComponent(key)}`);
     if (!res.ok) return '';
     const value = await res.json();
-    if (value !== null && typeof value === 'string') { localStorage.setItem(key, value); return value; }
+    if (value !== null && typeof value === 'string') { try { localStorage.setItem(key, value); } catch {} return value; }
     return '';
   } catch { return ''; }
 }
 
 async function dbSetStr(key, value) {
-  localStorage.setItem(key, value);
+  try { localStorage.setItem(key, value); } catch (e) { try { localStorage.removeItem(key); } catch {} }
   try {
     const res = await fetch(API, {
       method: 'POST',

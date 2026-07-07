@@ -34,59 +34,117 @@
 </div>
 <div class="bg-white border-b border-gray-200 overflow-x-auto">
   <div class="flex min-w-max px-4">
-    <button class="tab-btn2 active" onclick="setTab('about')">🏫 총동아리연합회</button>
-    <button class="tab-btn2" onclick="setTab('clubs')">🎯 동아리 소개</button>
-    <button class="tab-btn2" onclick="setTab('news')">📢 소식마당</button>
-    <button class="tab-btn2" onclick="setTab('info')">📁 정보마당</button>
-    <button class="tab-btn2" onclick="setTab('election')">🗳️ 선거관리위원회</button>
-    <button class="tab-btn2" onclick="setTab('contact')">✉️ 문의사항</button>
-    <button class="tab-btn2" onclick="setTab('images')">🖼️ 이미지</button>
-    <button class="tab-btn2" onclick="setTab('settings')">⚙️ 설정</button>
+    <button class="tab-btn2 active" data-tab="about" onclick="setTab('about')">🏫 총동아리연합회</button>
+    <button class="tab-btn2" data-tab="clubs" onclick="setTab('clubs')">🎯 동아리 소개</button>
+    <button class="tab-btn2" data-tab="news" onclick="setTab('news')">📢 소식마당</button>
+    <button class="tab-btn2" data-tab="info" onclick="setTab('info')">📁 정보마당</button>
+    <button class="tab-btn2" data-tab="election" onclick="setTab('election')">🗳️ 선거관리위원회</button>
+    <button class="tab-btn2" data-tab="contact" onclick="setTab('contact')">✉️ 문의사항</button>
+    <button class="tab-btn2" data-tab="images" onclick="setTab('images')">🖼️ 이미지</button>
+    <button class="tab-btn2" data-tab="settings" onclick="setTab('settings')">⚙️ 설정</button>
   </div>
 </div>
 <div class="max-w-7xl mx-auto px-4 py-8">
 
 <!-- 총동아리연합회 탭 -->
-<div id="tab-about" class="tab-panel space-y-6">
-  <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
-    <h2 class="font-bold text-gray-800">소개 / 비전</h2>
-    <div>
-      <label class="block text-sm text-gray-600 mb-1">소개글</label>
-      <textarea id="ab-intro" rows="5" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none"></textarea>
+<div id="tab-about" class="tab-panel space-y-4">
+  <div class="flex gap-2">
+    <button class="subtab-btn active" data-sub="intro" onclick="setSubtab('about','intro')">소개</button>
+    <button class="subtab-btn" data-sub="work" onclick="setSubtab('about','work')">주요업무</button>
+    <button class="subtab-btn" data-sub="org" onclick="setSubtab('about','org')">조직도</button>
+    <button class="subtab-btn" data-sub="location" onclick="setSubtab('about','location')">오시는 길</button>
+    <button class="subtab-btn" data-sub="rules" onclick="setSubtab('about','rules')">회칙</button>
+  </div>
+
+  <div id="subtab-about-intro" class="space-y-4">
+    <div class="bg-white rounded-xl border border-gray-200 p-6">
+      <label class="block text-sm text-gray-600 mb-1">총동아리연합회 소개 글</label>
+      <textarea id="ab-intro" rows="8" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none"></textarea>
     </div>
-    <div>
+    <div class="bg-white rounded-xl border border-gray-200 p-6">
       <label class="block text-sm text-gray-600 mb-1">비전</label>
       <textarea id="ab-vision" rows="3" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none"></textarea>
     </div>
     <button onclick="saveAbout()" class="admin-save-btn">저장</button>
   </div>
-  <div class="bg-white rounded-xl border border-gray-200 p-6">
-    <h2 class="font-bold text-gray-800 mb-4">오시는 길</h2>
-    <div class="grid grid-cols-2 gap-4">
-      <div><label class="block text-sm text-gray-600 mb-1">주소</label><input id="ab-addr" type="text" class="admin-input"></div>
-      <div><label class="block text-sm text-gray-600 mb-1">운영시간</label><input id="ab-hours" type="text" class="admin-input"></div>
-      <div><label class="block text-sm text-gray-600 mb-1">전화</label><input id="ab-phone" type="text" class="admin-input"></div>
-      <div><label class="block text-sm text-gray-600 mb-1">이메일</label><input id="ab-email" type="text" class="admin-input"></div>
-    </div>
-    <button onclick="saveAbout()" class="admin-save-btn mt-4">저장</button>
+
+  <div id="subtab-about-work" class="hidden space-y-3">
+    <div id="work-items-list" class="space-y-3"></div>
+    <button onclick="addWorkItem()" class="text-sm text-blue-600 hover:underline">+ 업무 추가</button>
+    <button onclick="saveAbout()" class="admin-save-btn ml-3">저장</button>
   </div>
-  <div class="bg-white rounded-xl border border-gray-200 p-6">
-    <h2 class="font-bold text-gray-800 mb-4">회칙</h2>
-    <textarea id="ab-rules" rows="8" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none mb-3"></textarea>
-    <div class="mb-3">
-      <label class="block text-sm text-gray-600 mb-1">회칙 파일 (선택)</label>
-      <input type="file" id="ab-rules-file" accept=".hwp,.pdf,.docx" class="text-sm">
+
+  <div id="subtab-about-org" class="hidden">
+    <div class="bg-white rounded-xl border border-gray-200 p-5">
+      <h3 class="font-semibold text-gray-700 mb-1">조직도 이미지</h3>
+      <p class="text-xs text-gray-400 mb-4">이미지를 업로드하면 조직도 페이지에 표시됩니다. 없으면 기본 조직도가 표시됩니다.</p>
+      <div class="flex items-center gap-4">
+        <div class="w-48 h-28 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center overflow-hidden bg-gray-50" id="org-admin-preview">
+          <span class="text-xs text-gray-400">이미지 없음</span>
+        </div>
+        <div class="flex gap-2">
+          <label class="cursor-pointer px-3 py-2 bg-gray-800 text-white text-sm rounded-lg hover:bg-gray-700">업로드
+            <input type="file" accept="image/*" class="hidden" onchange="uploadImg('org', this)">
+          </label>
+          <button onclick="deleteImg('org')" class="px-3 py-2 border border-red-300 text-red-500 text-sm rounded-lg hover:bg-red-50">삭제</button>
+        </div>
+      </div>
     </div>
-    <button onclick="saveAbout()" class="admin-save-btn">저장</button>
+  </div>
+
+  <div id="subtab-about-location" class="hidden space-y-4">
+    <div class="bg-white rounded-xl border border-gray-200 p-5">
+      <h3 class="font-semibold text-gray-700 mb-1">지도 이미지</h3>
+      <p class="text-xs text-gray-400 mb-4">오시는 길 페이지에 표시될 지도 또는 약도 이미지</p>
+      <div class="flex items-center gap-4">
+        <div class="w-48 h-28 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center overflow-hidden bg-gray-50" id="location-admin-preview">
+          <span class="text-xs text-gray-400">이미지 없음</span>
+        </div>
+        <div class="flex gap-2">
+          <label class="cursor-pointer px-3 py-2 bg-gray-800 text-white text-sm rounded-lg hover:bg-gray-700">업로드
+            <input type="file" accept="image/*" class="hidden" onchange="uploadImg('location', this)">
+          </label>
+          <button onclick="deleteImg('location')" class="px-3 py-2 border border-red-300 text-red-500 text-sm rounded-lg hover:bg-red-50">삭제</button>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl border border-gray-200 p-6">
+      <h3 class="font-semibold text-gray-700 mb-3">위치 정보</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="block text-sm text-gray-600 mb-1">주소</label><input id="ab-addr" type="text" class="admin-input"></div>
+        <div><label class="block text-sm text-gray-600 mb-1">운영시간</label><input id="ab-hours" type="text" class="admin-input"></div>
+        <div><label class="block text-sm text-gray-600 mb-1">전화번호</label><input id="ab-phone" type="text" class="admin-input"></div>
+        <div><label class="block text-sm text-gray-600 mb-1">이메일</label><input id="ab-email" type="text" class="admin-input"></div>
+      </div>
+      <button onclick="saveAbout()" class="admin-save-btn mt-4">저장</button>
+    </div>
+  </div>
+
+  <div id="subtab-about-rules" class="hidden">
+    <div class="bg-white rounded-xl border border-gray-200 p-6">
+      <h3 class="font-semibold text-gray-700 mb-1">회칙 파일</h3>
+      <p class="text-xs text-gray-400 mb-4">PDF 또는 HWP 파일을 업로드하면 회칙 페이지에서 다운로드 버튼이 표시됩니다.</p>
+      <label class="block text-sm text-gray-600 mb-1">파일 업로드 (PDF / HWP)</label>
+      <div class="flex items-center gap-2 flex-wrap mb-3">
+        <label class="cursor-pointer px-3 py-1.5 border border-gray-300 rounded-lg text-xs text-gray-600 hover:bg-gray-50">📎 파일 첨부
+          <input type="file" id="ab-rules-file" accept=".hwp,.pdf,.docx" class="hidden" onchange="previewRulesFile(this)">
+        </label>
+        <div id="rules-file-info" class="hidden items-center gap-1.5 bg-blue-50 border border-blue-200 rounded-lg px-2.5 py-1.5">
+          <span id="rules-file-name" class="text-xs text-blue-700 truncate max-w-48"></span>
+        </div>
+      </div>
+      <button id="rules-file-remove" onclick="removeRulesFile()" class="hidden text-xs text-red-400 hover:underline mb-3">파일 삭제</button>
+      <button onclick="saveAbout()" class="admin-save-btn">저장</button>
+    </div>
   </div>
 </div>
 
 <!-- 동아리 탭 -->
 <div id="tab-clubs" class="tab-panel hidden space-y-4">
   <div class="flex gap-2">
-    <button class="subtab-btn active" onclick="setSubtab('clubs','list')">중앙동아리</button>
-    <button class="subtab-btn" onclick="setSubtab('clubs','provisional')">가동아리</button>
-    <button class="subtab-btn" onclick="setSubtab('clubs','location')">동아리방 위치</button>
+    <button class="subtab-btn active" data-sub="list" onclick="setSubtab('clubs','list')">중앙동아리</button>
+    <button class="subtab-btn" data-sub="provisional" onclick="setSubtab('clubs','provisional')">가동아리</button>
+    <button class="subtab-btn" data-sub="location" onclick="setSubtab('clubs','location')">동아리방 위치</button>
   </div>
   <div id="subtab-clubs-list">
     <div class="flex justify-end mb-3"><button onclick="showClubForm(null)" class="admin-add-btn">+ 중앙동아리 추가</button></div>
@@ -106,18 +164,41 @@
       <input type="hidden" id="cf-id">
       <div class="grid grid-cols-2 gap-4 mb-4">
         <div><label class="block text-sm text-gray-600 mb-1">동아리명 *</label><input id="cf-name" type="text" class="admin-input"></div>
-        <div><label class="block text-sm text-gray-600 mb-1">분류</label><input id="cf-category" type="text" class="admin-input" placeholder="예: 문화예술, 체육"></div>
-        <div><label class="block text-sm text-gray-600 mb-1">동아리방</label><input id="cf-room" type="text" class="admin-input"></div>
+        <div><label class="block text-sm text-gray-600 mb-1">분과</label>
+          <select id="cf-category" class="admin-input bg-white">
+            <option>공연분과</option><option>스포츠분과</option><option>레저분과</option><option>종교분과</option><option>사회분과</option><option>학술분과</option><option>전시분과</option>
+          </select>
+        </div>
+        <div><label class="block text-sm text-gray-600 mb-1">동아리방</label><input id="cf-room" type="text" class="admin-input" placeholder="예: A동 101호"></div>
         <div><label class="block text-sm text-gray-600 mb-1">회장</label><input id="cf-president" type="text" class="admin-input"></div>
-        <div><label class="block text-sm text-gray-600 mb-1">모집기간</label><input id="cf-recruit" type="text" class="admin-input"></div>
-        <div><label class="block text-sm text-gray-600 mb-1">정기모임</label><input id="cf-meeting" type="text" class="admin-input"></div>
+        <div><label class="block text-sm text-gray-600 mb-1">홈페이지</label><input id="cf-website" type="text" class="admin-input" placeholder="https://..."></div>
+        <div><label class="block text-sm text-gray-600 mb-1">모집 기간</label><input id="cf-recruit" type="text" class="admin-input" placeholder="예: 매 학기 초 모집"></div>
+        <div><label class="block text-sm text-gray-600 mb-1">정기모임</label><input id="cf-meeting" type="text" class="admin-input" placeholder="예: 매주 화·목 18:00"></div>
       </div>
-      <div class="mb-4"><label class="block text-sm text-gray-600 mb-1">한줄소개</label><input id="cf-intro" type="text" class="admin-input"></div>
-      <div class="mb-4"><label class="block text-sm text-gray-600 mb-1">상세설명</label><textarea id="cf-desc" rows="3" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none"></textarea></div>
+      <div class="mb-4"><label class="block text-sm text-gray-600 mb-1">한 줄 소개</label><input id="cf-desc" type="text" class="admin-input"></div>
+      <div class="mb-4"><label class="block text-sm text-gray-600 mb-1">상세 소개</label><textarea id="cf-intro" rows="4" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none"></textarea></div>
       <div class="mb-4">
-        <label class="block text-sm text-gray-600 mb-1">동아리 이미지</label>
-        <div id="cf-img-preview" class="mb-2 hidden"><img id="cf-img-preview-img" class="h-24 rounded-lg object-contain"></div>
-        <input type="file" id="cf-img" accept="image/*" onchange="previewClubImg(this)">
+        <label class="block text-sm text-gray-600 mb-1">활동 내용</label>
+        <div id="cf-activities-list" class="space-y-1.5 mb-1.5"></div>
+        <button type="button" onclick="addCfListItem('activities')" class="text-xs text-blue-600 hover:underline">+ 항목 추가</button>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-gray-600 mb-1">이런 분을 환영해요</label>
+        <div id="cf-targets-list" class="space-y-1.5 mb-1.5"></div>
+        <button type="button" onclick="addCfListItem('targets')" class="text-xs text-blue-600 hover:underline">+ 항목 추가</button>
+      </div>
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-sm text-gray-600 mb-1">동아리 로고</label>
+          <p class="text-xs text-gray-400 mb-1">카드 목록에 표시될 로고 (정사각형 이미지 권장)</p>
+          <div id="cf-logo-preview" class="mb-2 hidden"><img id="cf-logo-preview-img" class="h-20 rounded-lg object-contain"></div>
+          <input type="file" id="cf-logo" accept="image/*" onchange="previewClubImg(this,'logo')">
+        </div>
+        <div>
+          <label class="block text-sm text-gray-600 mb-1">소개 이미지</label>
+          <div id="cf-img-preview" class="mb-2 hidden"><img id="cf-img-preview-img" class="h-20 rounded-lg object-contain"></div>
+          <input type="file" id="cf-img" accept="image/*" onchange="previewClubImg(this,'image')">
+        </div>
       </div>
       <div class="flex gap-2">
         <button onclick="saveClub()" class="admin-save-btn">저장</button>
@@ -143,18 +224,41 @@
       <input type="hidden" id="pcf-id">
       <div class="grid grid-cols-2 gap-4 mb-4">
         <div><label class="block text-sm text-gray-600 mb-1">동아리명 *</label><input id="pcf-name" type="text" class="admin-input"></div>
-        <div><label class="block text-sm text-gray-600 mb-1">분류</label><input id="pcf-category" type="text" class="admin-input" placeholder="예: 문화예술, 체육"></div>
-        <div><label class="block text-sm text-gray-600 mb-1">동아리방</label><input id="pcf-room" type="text" class="admin-input"></div>
+        <div><label class="block text-sm text-gray-600 mb-1">분과</label>
+          <select id="pcf-category" class="admin-input bg-white">
+            <option>공연분과</option><option>스포츠분과</option><option>레저분과</option><option>종교분과</option><option>사회분과</option><option>학술분과</option><option>전시분과</option>
+          </select>
+        </div>
+        <div><label class="block text-sm text-gray-600 mb-1">동아리방</label><input id="pcf-room" type="text" class="admin-input" placeholder="예: A동 101호"></div>
         <div><label class="block text-sm text-gray-600 mb-1">회장</label><input id="pcf-president" type="text" class="admin-input"></div>
-        <div><label class="block text-sm text-gray-600 mb-1">모집기간</label><input id="pcf-recruit" type="text" class="admin-input"></div>
-        <div><label class="block text-sm text-gray-600 mb-1">정기모임</label><input id="pcf-meeting" type="text" class="admin-input"></div>
+        <div><label class="block text-sm text-gray-600 mb-1">홈페이지</label><input id="pcf-website" type="text" class="admin-input" placeholder="https://..."></div>
+        <div><label class="block text-sm text-gray-600 mb-1">모집 기간</label><input id="pcf-recruit" type="text" class="admin-input" placeholder="예: 매 학기 초 모집"></div>
+        <div><label class="block text-sm text-gray-600 mb-1">정기모임</label><input id="pcf-meeting" type="text" class="admin-input" placeholder="예: 매주 화·목 18:00"></div>
       </div>
-      <div class="mb-4"><label class="block text-sm text-gray-600 mb-1">한줄소개</label><input id="pcf-intro" type="text" class="admin-input"></div>
-      <div class="mb-4"><label class="block text-sm text-gray-600 mb-1">상세설명</label><textarea id="pcf-desc" rows="3" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none"></textarea></div>
+      <div class="mb-4"><label class="block text-sm text-gray-600 mb-1">한 줄 소개</label><input id="pcf-desc" type="text" class="admin-input"></div>
+      <div class="mb-4"><label class="block text-sm text-gray-600 mb-1">상세 소개</label><textarea id="pcf-intro" rows="4" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none"></textarea></div>
       <div class="mb-4">
-        <label class="block text-sm text-gray-600 mb-1">동아리 이미지</label>
-        <div id="pcf-img-preview" class="mb-2 hidden"><img id="pcf-img-preview-img" class="h-24 rounded-lg object-contain"></div>
-        <input type="file" id="pcf-img" accept="image/*" onchange="previewPClubImg(this)">
+        <label class="block text-sm text-gray-600 mb-1">활동 내용</label>
+        <div id="pcf-activities-list" class="space-y-1.5 mb-1.5"></div>
+        <button type="button" onclick="addPcfListItem('activities')" class="text-xs text-blue-600 hover:underline">+ 항목 추가</button>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-gray-600 mb-1">이런 분을 환영해요</label>
+        <div id="pcf-targets-list" class="space-y-1.5 mb-1.5"></div>
+        <button type="button" onclick="addPcfListItem('targets')" class="text-xs text-blue-600 hover:underline">+ 항목 추가</button>
+      </div>
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-sm text-gray-600 mb-1">동아리 로고</label>
+          <p class="text-xs text-gray-400 mb-1">카드 목록에 표시될 로고 (정사각형 이미지 권장)</p>
+          <div id="pcf-logo-preview" class="mb-2 hidden"><img id="pcf-logo-preview-img" class="h-20 rounded-lg object-contain"></div>
+          <input type="file" id="pcf-logo" accept="image/*" onchange="previewPClubImg(this,'logo')">
+        </div>
+        <div>
+          <label class="block text-sm text-gray-600 mb-1">소개 이미지</label>
+          <div id="pcf-img-preview" class="mb-2 hidden"><img id="pcf-img-preview-img" class="h-20 rounded-lg object-contain"></div>
+          <input type="file" id="pcf-img" accept="image/*" onchange="previewPClubImg(this,'image')">
+        </div>
       </div>
       <div class="flex gap-2">
         <button onclick="savePClub()" class="admin-save-btn">저장</button>
@@ -187,10 +291,10 @@
 <!-- 소식마당 탭 -->
 <div id="tab-news" class="tab-panel hidden space-y-4">
   <div class="flex gap-2">
-    <button class="subtab-btn active" onclick="setSubtab('news','notices')">공지사항</button>
-    <button class="subtab-btn" onclick="setSubtab('news','calendar')">일정</button>
-    <button class="subtab-btn" onclick="setSubtab('news','minutes')">회의록</button>
-    <button class="subtab-btn" onclick="setSubtab('news','clubnews')">동아리 소식</button>
+    <button class="subtab-btn active" data-sub="notices" onclick="setSubtab('news','notices')">공지사항</button>
+    <button class="subtab-btn" data-sub="calendar" onclick="setSubtab('news','calendar')">일정</button>
+    <button class="subtab-btn" data-sub="minutes" onclick="setSubtab('news','minutes')">회의록</button>
+    <button class="subtab-btn" data-sub="clubnews" onclick="setSubtab('news','clubnews')">동아리 소식</button>
   </div>
 
   <!-- 공지사항 -->
@@ -229,8 +333,14 @@
         <div><label class="block text-sm text-gray-600 mb-1">종료일 *</label><input id="ef-end" type="date" class="admin-input"></div>
         <div class="col-span-2"><label class="block text-sm text-gray-600 mb-1">색상</label>
           <div class="flex gap-2 flex-wrap" id="color-picker">
-            ${['#3B82F6','#10B981','#F59E0B','#EF4444','#8B5CF6','#EC4899','#14B8A6','#F97316'].map(c=>`
-              <button type="button" onclick="selectColor('${c}')" class="color-swatch w-7 h-7 rounded-full border-2 border-transparent hover:scale-110 transition-transform" style="background:${c}" data-color="${c}"></button>`).join('')}
+            <button type="button" onclick="selectColor('#3B82F6')" title="파랑" class="color-swatch w-7 h-7 rounded-full border-2 border-transparent hover:scale-110 transition-transform" style="background:#3B82F6" data-color="#3B82F6"></button>
+            <button type="button" onclick="selectColor('#10B981')" title="초록" class="color-swatch w-7 h-7 rounded-full border-2 border-transparent hover:scale-110 transition-transform" style="background:#10B981" data-color="#10B981"></button>
+            <button type="button" onclick="selectColor('#F59E0B')" title="주황" class="color-swatch w-7 h-7 rounded-full border-2 border-transparent hover:scale-110 transition-transform" style="background:#F59E0B" data-color="#F59E0B"></button>
+            <button type="button" onclick="selectColor('#EF4444')" title="빨강" class="color-swatch w-7 h-7 rounded-full border-2 border-transparent hover:scale-110 transition-transform" style="background:#EF4444" data-color="#EF4444"></button>
+            <button type="button" onclick="selectColor('#8B5CF6')" title="보라" class="color-swatch w-7 h-7 rounded-full border-2 border-transparent hover:scale-110 transition-transform" style="background:#8B5CF6" data-color="#8B5CF6"></button>
+            <button type="button" onclick="selectColor('#EC4899')" title="분홍" class="color-swatch w-7 h-7 rounded-full border-2 border-transparent hover:scale-110 transition-transform" style="background:#EC4899" data-color="#EC4899"></button>
+            <button type="button" onclick="selectColor('#6B7280')" title="회색" class="color-swatch w-7 h-7 rounded-full border-2 border-transparent hover:scale-110 transition-transform" style="background:#6B7280" data-color="#6B7280"></button>
+            <button type="button" onclick="selectColor('#1D4ED8')" title="남색" class="color-swatch w-7 h-7 rounded-full border-2 border-transparent hover:scale-110 transition-transform" style="background:#1D4ED8" data-color="#1D4ED8"></button>
           </div>
         </div>
       </div>
@@ -289,10 +399,10 @@
 <!-- 정보마당 탭 -->
 <div id="tab-info" class="tab-panel hidden space-y-4">
   <div class="flex gap-2">
-    <button class="subtab-btn active" onclick="setSubtab('info','rules')">규칙</button>
-    <button class="subtab-btn" onclick="setSubtab('info','forms')">양식 파일</button>
-    <button class="subtab-btn" onclick="setSubtab('info','penalty')">벌점 현황</button>
-    <button class="subtab-btn" onclick="setSubtab('info','cert')">증명서 양식</button>
+    <button class="subtab-btn active" data-sub="rules" onclick="setSubtab('info','rules')">규칙</button>
+    <button class="subtab-btn" data-sub="forms" onclick="setSubtab('info','forms')">양식 파일</button>
+    <button class="subtab-btn" data-sub="penalty" onclick="setSubtab('info','penalty')">벌점 현황</button>
+    <button class="subtab-btn" data-sub="cert" onclick="setSubtab('info','cert')">증명서 양식</button>
   </div>
   <div id="subtab-info-rules" class="space-y-3">
     <div id="info-rules-list" class="space-y-2"></div>
@@ -365,32 +475,63 @@
 
 <!-- 선거 탭 -->
 <div id="tab-election" class="tab-panel hidden space-y-4">
-  <div class="flex justify-end"><button onclick="showElectionForm(null)" class="admin-add-btn">+ 공고 추가</button></div>
-  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden"><div id="election-list-admin"></div></div>
-  <div id="election-form" class="hidden bg-white rounded-xl border border-gray-200 p-6 mt-4">
-    <input type="hidden" id="elef-id">
-    <div class="grid grid-cols-2 gap-4 mb-4">
-      <div class="col-span-2"><label class="block text-sm text-gray-600 mb-1">제목 *</label><input id="elef-title" type="text" class="admin-input"></div>
-      <div><label class="block text-sm text-gray-600 mb-1">날짜</label><input id="elef-date" type="date" class="admin-input"></div>
-      <div><label class="block text-sm text-gray-600 mb-1">상태</label>
-        <select id="elef-status" class="admin-input">
-          <option>예정</option><option>진행중</option><option>완료</option>
-        </select>
-      </div>
-      <div class="col-span-2"><label class="block text-sm text-gray-600 mb-1">내용</label><textarea id="elef-content" rows="4" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none"></textarea></div>
+  <div class="flex gap-2">
+    <button class="subtab-btn active" data-sub="intro" onclick="setSubtab('election','intro')">소개</button>
+    <button class="subtab-btn" data-sub="announce" onclick="setSubtab('election','announce')">선거 공고</button>
+  </div>
+  <div id="subtab-election-intro" class="space-y-4">
+    <div class="bg-white rounded-xl border border-gray-200 p-6">
+      <label class="block text-sm text-gray-600 mb-1">선거관리위원회 소개 글</label>
+      <textarea id="elc-intro" rows="4" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none"></textarea>
     </div>
-    <div class="mb-4"><label class="block text-sm text-gray-600 mb-1">첨부파일</label><input type="file" id="elef-attach"></div>
-    <div class="flex gap-2">
-      <button onclick="saveElection()" class="admin-save-btn">저장</button>
-      <button onclick="document.getElementById('election-form').classList.add('hidden')" class="px-4 py-2 border border-gray-200 text-sm rounded-lg hover:bg-gray-50">취소</button>
+    <div class="bg-white rounded-xl border border-gray-200 p-6">
+      <h3 class="font-semibold text-gray-700 mb-3">핵심 가치</h3>
+      <div id="election-values-list" class="space-y-3 mb-2"></div>
+      <button onclick="addElectionValue()" class="text-sm text-blue-600 hover:underline">+ 가치 추가</button>
+    </div>
+    <button onclick="saveElectionIntro()" class="admin-save-btn">저장</button>
+  </div>
+  <div id="subtab-election-announce" class="hidden">
+    <div class="flex justify-end mb-3"><button onclick="showElectionForm(null)" class="admin-add-btn">+ 공고 추가</button></div>
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden"><div id="election-list-admin"></div></div>
+    <div id="election-form" class="hidden bg-white rounded-xl border border-gray-200 p-6 mt-4">
+      <input type="hidden" id="elef-id">
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div class="col-span-2"><label class="block text-sm text-gray-600 mb-1">제목 *</label><input id="elef-title" type="text" class="admin-input"></div>
+        <div><label class="block text-sm text-gray-600 mb-1">날짜</label><input id="elef-date" type="date" class="admin-input"></div>
+        <div><label class="block text-sm text-gray-600 mb-1">상태</label>
+          <select id="elef-status" class="admin-input">
+            <option>예정</option><option>진행중</option><option>완료</option>
+          </select>
+        </div>
+        <div class="col-span-2"><label class="block text-sm text-gray-600 mb-1">내용</label><textarea id="elef-content" rows="4" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none"></textarea></div>
+      </div>
+      <div class="mb-4"><label class="block text-sm text-gray-600 mb-1">첨부파일</label><input type="file" id="elef-attach"></div>
+      <div class="flex gap-2">
+        <button onclick="saveElection()" class="admin-save-btn">저장</button>
+        <button onclick="document.getElementById('election-form').classList.add('hidden')" class="px-4 py-2 border border-gray-200 text-sm rounded-lg hover:bg-gray-50">취소</button>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- 문의 탭 -->
-<div id="tab-contact" class="tab-panel hidden">
-  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-    <div id="inquiries-list-admin"></div>
+<div id="tab-contact" class="tab-panel hidden space-y-4">
+  <div class="flex gap-2">
+    <button class="subtab-btn active" data-sub="faq" onclick="setSubtab('contact','faq')">FAQ</button>
+    <button class="subtab-btn" data-sub="settings" onclick="setSubtab('contact','settings')">문의 페이지 설정</button>
+  </div>
+  <div id="subtab-contact-faq" class="space-y-3">
+    <div id="faq-list-admin" class="space-y-2"></div>
+    <button onclick="addFaq()" class="text-sm text-blue-600 hover:underline">+ FAQ 추가</button>
+    <button onclick="saveFaqs()" class="admin-save-btn ml-3">저장</button>
+  </div>
+  <div id="subtab-contact-settings" class="hidden space-y-4">
+    <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-3">
+      <div><label class="block text-sm text-gray-600 mb-1">페이지 제목</label><input id="ask-title-input" type="text" class="admin-input"></div>
+      <div><label class="block text-sm text-gray-600 mb-1">안내 문구</label><input id="ask-desc-input" type="text" class="admin-input"></div>
+    </div>
+    <button onclick="saveContactSettings()" class="admin-save-btn">저장</button>
   </div>
 </div>
 
@@ -416,48 +557,6 @@
     <p class="text-xs text-gray-400 mb-4">메인 페이지 슬라이더 배경 이미지 (최대 3개)</p>
     <div class="flex gap-4 flex-wrap" id="banner-admin-list"></div>
   </div>
-  <div class="bg-white rounded-xl border border-gray-200 p-5">
-    <h3 class="font-semibold text-gray-700 mb-1">조직도 이미지</h3>
-    <div class="flex items-center gap-4">
-      <div class="w-48 h-28 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center overflow-hidden bg-gray-50" id="org-admin-preview">
-        <span class="text-xs text-gray-400">이미지 없음</span>
-      </div>
-      <div class="flex gap-2">
-        <label class="cursor-pointer px-3 py-2 bg-gray-800 text-white text-sm rounded-lg hover:bg-gray-700">업로드
-          <input type="file" accept="image/*" class="hidden" onchange="uploadImg('org', this)">
-        </label>
-        <button onclick="deleteImg('org')" class="px-3 py-2 border border-red-300 text-red-500 text-sm rounded-lg hover:bg-red-50">삭제</button>
-      </div>
-    </div>
-  </div>
-  <div class="bg-white rounded-xl border border-gray-200 p-5">
-    <h3 class="font-semibold text-gray-700 mb-1">오시는 길 지도 이미지</h3>
-    <div class="flex items-center gap-4">
-      <div class="w-48 h-28 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center overflow-hidden bg-gray-50" id="location-admin-preview">
-        <span class="text-xs text-gray-400">이미지 없음</span>
-      </div>
-      <div class="flex gap-2">
-        <label class="cursor-pointer px-3 py-2 bg-gray-800 text-white text-sm rounded-lg hover:bg-gray-700">업로드
-          <input type="file" accept="image/*" class="hidden" onchange="uploadImg('location', this)">
-        </label>
-        <button onclick="deleteImg('location')" class="px-3 py-2 border border-red-300 text-red-500 text-sm rounded-lg hover:bg-red-50">삭제</button>
-      </div>
-    </div>
-  </div>
-  <div class="bg-white rounded-xl border border-gray-200 p-5">
-    <h3 class="font-semibold text-gray-700 mb-1">동아리방 위치 지도 이미지</h3>
-    <div class="flex items-center gap-4">
-      <div class="w-48 h-28 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center overflow-hidden bg-gray-50" id="clubmap-admin-preview">
-        <span class="text-xs text-gray-400">이미지 없음</span>
-      </div>
-      <div class="flex gap-2">
-        <label class="cursor-pointer px-3 py-2 bg-gray-800 text-white text-sm rounded-lg hover:bg-gray-700">업로드
-          <input type="file" accept="image/*" class="hidden" onchange="uploadImg('clubmap', this)">
-        </label>
-        <button onclick="deleteImg('clubmap')" class="px-3 py-2 border border-red-300 text-red-500 text-sm rounded-lg hover:bg-red-50">삭제</button>
-      </div>
-    </div>
-  </div>
 </div>
 
 <!-- 사이트 설정 탭 -->
@@ -465,7 +564,8 @@
   <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
     <h2 class="font-bold text-gray-800">배너 슬라이드 문구</h2>
     <div id="banner-slides-list" class="space-y-4"></div>
-    <button onclick="saveSettings()" class="admin-save-btn">저장</button>
+    <button onclick="addBannerSlideText()" class="text-sm text-blue-600 hover:underline">+ 배너 문구 추가</button>
+    <button onclick="saveSettings()" class="admin-save-btn ml-3">저장</button>
   </div>
   <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
     <h2 class="font-bold text-gray-800">SNS 링크</h2>
@@ -476,7 +576,6 @@
   <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
     <h2 class="font-bold text-gray-800">푸터</h2>
     <div><label class="block text-sm text-gray-600 mb-1">사이트 명칭</label><input id="st-footer-title" type="text" class="admin-input"></div>
-    <div><label class="block text-sm text-gray-600 mb-1">저작권 문구</label><input id="st-footer-copy" type="text" class="admin-input"></div>
     <button onclick="saveSettings()" class="admin-save-btn">저장</button>
   </div>
   <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
@@ -614,13 +713,14 @@ async function initAdmin() {
 function setTab(tab) {
   document.querySelectorAll('.tab-btn2').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.add('hidden'));
-  event.currentTarget.classList.add('active');
+  const btn = document.querySelector(`.tab-btn2[data-tab="${tab}"]`);
+  if (btn) btn.classList.add('active');
   document.getElementById(`tab-${tab}`).classList.remove('hidden');
   if(tab==='clubs') loadClubsTab();
   if(tab==='news') { loadNewsTab(); setSubtab('news','notices'); }
   if(tab==='info') { loadInfoTab(); setSubtab('info','rules'); }
-  if(tab==='election') loadElectionTab();
-  if(tab==='contact') loadContactTab();
+  if(tab==='election') { loadElectionTab(); setSubtab('election','intro'); }
+  if(tab==='contact') { loadContactTab(); setSubtab('contact','faq'); }
   if(tab==='images') loadImagesTab();
   if(tab==='settings') loadSettingsTab();
 }
@@ -628,25 +728,66 @@ function setTab(tab) {
 function setSubtab(tab, sub) {
   const parent = document.getElementById(`tab-${tab}`);
   parent.querySelectorAll('.subtab-btn').forEach(b=>b.classList.remove('active'));
-  event.target.classList.add('active');
+  const btn = parent.querySelector(`.subtab-btn[data-sub="${sub}"]`);
+  if (btn) btn.classList.add('active');
   parent.querySelectorAll(`[id^="subtab-${tab}-"]`).forEach(p=>p.classList.add('hidden'));
   document.getElementById(`subtab-${tab}-${sub}`).classList.remove('hidden');
 }
 
 /* ── 총동아리연합회 탭 ── */
-function loadAboutTab() {
+async function loadAboutTab() {
   document.getElementById('ab-intro').value = siteContent.aboutIntro || '';
   document.getElementById('ab-vision').value = siteContent.aboutVision || '';
   document.getElementById('ab-addr').value = siteContent.locationAddress || '';
   document.getElementById('ab-hours').value = siteContent.locationHours || '';
   document.getElementById('ab-phone').value = siteContent.locationPhone || '';
   document.getElementById('ab-email').value = siteContent.locationEmail || '';
-  document.getElementById('ab-rules').value = siteContent.rules || '';
+  if (!siteContent.workItems) siteContent.workItems = [];
+  renderWorkItems();
+  const [org, loc] = await Promise.all([Store.getOrgImage(), Store.getLocationImage()]);
+  document.getElementById('org-admin-preview').innerHTML = org ? `<img src="${org}" class="max-h-full max-w-full object-contain">` : '<span class="text-xs text-gray-400">이미지 없음</span>';
+  document.getElementById('location-admin-preview').innerHTML = loc ? `<img src="${loc}" class="max-h-full max-w-full object-contain">` : '<span class="text-xs text-gray-400">이미지 없음</span>';
+  renderRulesFileInfo();
+}
+function renderWorkItems() {
+  const el = document.getElementById('work-items-list');
+  el.innerHTML = (siteContent.workItems||[]).map((w,i) => `
+    <div class="bg-white rounded-xl border border-gray-200 p-4">
+      <div class="flex justify-between mb-2">
+        <span class="text-xs font-bold text-gray-400">업무 ${i+1}</span>
+        <button onclick="removeWorkItem(${i})" class="text-xs text-red-400 hover:text-red-600">삭제</button>
+      </div>
+      <input value="${w.title||''}" placeholder="제목" onchange="siteContent.workItems[${i}].title=this.value" class="admin-input mb-2">
+      <input value="${w.desc||''}" placeholder="설명" onchange="siteContent.workItems[${i}].desc=this.value" class="admin-input">
+    </div>`).join('');
+}
+function addWorkItem() { siteContent.workItems = [...(siteContent.workItems||[]), {title:'',desc:''}]; renderWorkItems(); }
+function removeWorkItem(i) { siteContent.workItems = siteContent.workItems.filter((_,j)=>j!==i); renderWorkItems(); }
+function renderRulesFileInfo() {
+  const info = document.getElementById('rules-file-info');
+  const name = document.getElementById('rules-file-name');
+  const removeBtn = document.getElementById('rules-file-remove');
+  if (siteContent.rulesFile) {
+    info.classList.remove('hidden'); info.classList.add('flex');
+    name.textContent = siteContent.rulesFile.name;
+    removeBtn.classList.remove('hidden');
+  } else {
+    info.classList.add('hidden'); info.classList.remove('flex');
+    removeBtn.classList.add('hidden');
+  }
+}
+async function previewRulesFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  siteContent.rulesFile = await Store.readFileAsBase64(file);
+  renderRulesFileInfo();
+}
+function removeRulesFile() {
+  siteContent.rulesFile = undefined;
+  document.getElementById('ab-rules-file').value = '';
+  renderRulesFileInfo();
 }
 async function saveAbout() {
-  const rulesFileInput = document.getElementById('ab-rules-file');
-  let rulesFile = siteContent.rulesFile;
-  if(rulesFileInput.files[0]) rulesFile = await Store.readFileAsBase64(rulesFileInput.files[0]);
   siteContent = { ...siteContent,
     aboutIntro: document.getElementById('ab-intro').value,
     aboutVision: document.getElementById('ab-vision').value,
@@ -654,8 +795,6 @@ async function saveAbout() {
     locationHours: document.getElementById('ab-hours').value,
     locationPhone: document.getElementById('ab-phone').value,
     locationEmail: document.getElementById('ab-email').value,
-    rules: document.getElementById('ab-rules').value,
-    rulesFile,
   };
   await Store.saveSiteContent(siteContent);
   alert('저장되었습니다');
@@ -688,6 +827,23 @@ function renderPClubsTable() {
       </td>
     </tr>`).join('') : '<tr><td colspan="4" class="text-center text-gray-400 py-8 text-sm">등록된 가동아리가 없습니다</td></tr>';
 }
+let pcfActivities = [''], pcfTargets = [''];
+let pcfLogoUrl = '', pcfImageUrl = '';
+function renderPcfList(kind) {
+  const values = kind==='activities' ? pcfActivities : pcfTargets;
+  document.getElementById(`pcf-${kind}-list`).innerHTML = values.map((v,i)=>`
+    <div class="flex gap-2">
+      <input value="${v}" onchange="updatePcfListItem('${kind}',${i},this.value)" class="admin-input flex-1">
+      <button type="button" onclick="removePcfListItem('${kind}',${i})" class="text-gray-400 hover:text-red-500 text-lg leading-none w-7">×</button>
+    </div>`).join('');
+}
+function addPcfListItem(kind) { (kind==='activities'?pcfActivities:pcfTargets).push(''); renderPcfList(kind); }
+function updatePcfListItem(kind,i,v) { (kind==='activities'?pcfActivities:pcfTargets)[i]=v; }
+function removePcfListItem(kind,i) {
+  const arr = kind==='activities'?pcfActivities:pcfTargets;
+  if(arr.length>1) arr.splice(i,1); else arr[0]='';
+  renderPcfList(kind);
+}
 function showPClubForm(idx) {
   const form = document.getElementById('pclub-form');
   form.classList.remove('hidden');
@@ -695,46 +851,57 @@ function showPClubForm(idx) {
   if(idx===null) {
     document.getElementById('pclub-form-title').textContent = '가동아리 추가';
     document.getElementById('pcf-id').value = '';
-    ['name','category','room','president','recruit','meeting','intro','desc'].forEach(f=>document.getElementById(`pcf-${f}`).value='');
+    ['name','room','president','website','recruit','meeting','intro','desc'].forEach(f=>document.getElementById(`pcf-${f}`).value='');
+    document.getElementById('pcf-category').value = '공연분과';
+    pcfActivities = ['']; pcfTargets = ['']; pcfLogoUrl = ''; pcfImageUrl = '';
     document.getElementById('pcf-img-preview').classList.add('hidden');
+    document.getElementById('pcf-logo-preview').classList.add('hidden');
   } else {
     const c = pclubs[idx];
     document.getElementById('pclub-form-title').textContent = '가동아리 수정';
     document.getElementById('pcf-id').value = idx;
     document.getElementById('pcf-name').value = c.name||'';
-    document.getElementById('pcf-category').value = c.category||'';
+    document.getElementById('pcf-category').value = c.category||'공연분과';
     document.getElementById('pcf-room').value = c.room||'';
     document.getElementById('pcf-president').value = c.president||'';
+    document.getElementById('pcf-website').value = c.website||'';
     document.getElementById('pcf-recruit').value = c.recruitPeriod||'';
     document.getElementById('pcf-meeting').value = c.meetingSchedule||'';
     document.getElementById('pcf-intro').value = c.intro||'';
     document.getElementById('pcf-desc').value = c.desc||'';
-    if(c.imageUrl) { document.getElementById('pcf-img-preview').classList.remove('hidden'); document.getElementById('pcf-img-preview-img').src=c.imageUrl; }
+    pcfActivities = c.activities && c.activities.length ? [...c.activities] : [''];
+    pcfTargets = c.targets && c.targets.length ? [...c.targets] : [''];
+    pcfLogoUrl = c.logoUrl||''; pcfImageUrl = c.imageUrl||'';
+    if(pcfLogoUrl) { document.getElementById('pcf-logo-preview').classList.remove('hidden'); document.getElementById('pcf-logo-preview-img').src=pcfLogoUrl; }
+    else document.getElementById('pcf-logo-preview').classList.add('hidden');
+    if(pcfImageUrl) { document.getElementById('pcf-img-preview').classList.remove('hidden'); document.getElementById('pcf-img-preview-img').src=pcfImageUrl; }
     else document.getElementById('pcf-img-preview').classList.add('hidden');
   }
+  renderPcfList('activities'); renderPcfList('targets');
 }
-async function previewPClubImg(input) {
+async function previewPClubImg(input, kind) {
   if(!input.files[0]) return;
   const r = await Store.readFileAsBase64(input.files[0]);
-  document.getElementById('pcf-img-preview').classList.remove('hidden');
-  document.getElementById('pcf-img-preview-img').src = r.url;
+  if (kind === 'logo') { pcfLogoUrl = r.url; document.getElementById('pcf-logo-preview').classList.remove('hidden'); document.getElementById('pcf-logo-preview-img').src = r.url; }
+  else { pcfImageUrl = r.url; document.getElementById('pcf-img-preview').classList.remove('hidden'); document.getElementById('pcf-img-preview-img').src = r.url; }
 }
 async function savePClub() {
   const idx = document.getElementById('pcf-id').value;
-  const imgFile = document.getElementById('pcf-img').files[0];
-  let imageUrl = idx!=='' ? pclubs[parseInt(idx)].imageUrl||'' : '';
-  if(imgFile) { const r = await Store.readFileAsBase64(imgFile); imageUrl = r.url; }
   const club = {
     id: idx!=='' ? pclubs[parseInt(idx)].id : Date.now(),
     name: document.getElementById('pcf-name').value,
     category: document.getElementById('pcf-category').value,
     room: document.getElementById('pcf-room').value,
     president: document.getElementById('pcf-president').value,
+    website: document.getElementById('pcf-website').value,
     recruitPeriod: document.getElementById('pcf-recruit').value,
     meetingSchedule: document.getElementById('pcf-meeting').value,
     intro: document.getElementById('pcf-intro').value,
     desc: document.getElementById('pcf-desc').value,
-    activities:[], targets:[], imageUrl,
+    activities: pcfActivities.filter(Boolean),
+    targets: pcfTargets.filter(Boolean),
+    logoUrl: pcfLogoUrl,
+    imageUrl: pcfImageUrl,
   };
   if(idx!=='') pclubs[parseInt(idx)] = club; else pclubs.push(club);
   await Store.saveProvisionalClubs(pclubs);
@@ -760,52 +927,81 @@ function renderClubsTable() {
       </td>
     </tr>`).join('');
 }
+let cfActivities = [''], cfTargets = [''];
+let cfLogoUrl = '', cfImageUrl = '';
+function renderCfList(kind) {
+  const values = kind==='activities' ? cfActivities : cfTargets;
+  document.getElementById(`cf-${kind}-list`).innerHTML = values.map((v,i)=>`
+    <div class="flex gap-2">
+      <input value="${v}" onchange="updateCfListItem('${kind}',${i},this.value)" class="admin-input flex-1">
+      <button type="button" onclick="removeCfListItem('${kind}',${i})" class="text-gray-400 hover:text-red-500 text-lg leading-none w-7">×</button>
+    </div>`).join('');
+}
+function addCfListItem(kind) { (kind==='activities'?cfActivities:cfTargets).push(''); renderCfList(kind); }
+function updateCfListItem(kind,i,v) { (kind==='activities'?cfActivities:cfTargets)[i]=v; }
+function removeCfListItem(kind,i) {
+  const arr = kind==='activities'?cfActivities:cfTargets;
+  if(arr.length>1) arr.splice(i,1); else arr[0]='';
+  renderCfList(kind);
+}
 function showClubForm(idx) {
   const form = document.getElementById('club-form');
   form.classList.remove('hidden');
   form.scrollIntoView({behavior:'smooth'});
   if(idx===null) {
     document.getElementById('club-form-title').textContent = '동아리 추가';
-    ['id','name','category','room','president','recruit','meeting','intro','desc'].forEach(f=>document.getElementById(`cf-${f}`).value='');
+    ['name','room','president','website','recruit','meeting','intro','desc'].forEach(f=>document.getElementById(`cf-${f}`).value='');
+    document.getElementById('cf-id').value = '';
+    document.getElementById('cf-category').value = '공연분과';
+    cfActivities = ['']; cfTargets = ['']; cfLogoUrl = ''; cfImageUrl = '';
     document.getElementById('cf-img-preview').classList.add('hidden');
+    document.getElementById('cf-logo-preview').classList.add('hidden');
   } else {
     const c = clubs[idx];
     document.getElementById('club-form-title').textContent = '동아리 수정';
     document.getElementById('cf-id').value = idx;
     document.getElementById('cf-name').value = c.name||'';
-    document.getElementById('cf-category').value = c.category||'';
+    document.getElementById('cf-category').value = c.category||'공연분과';
     document.getElementById('cf-room').value = c.room||'';
     document.getElementById('cf-president').value = c.president||'';
+    document.getElementById('cf-website').value = c.website||'';
     document.getElementById('cf-recruit').value = c.recruitPeriod||'';
     document.getElementById('cf-meeting').value = c.meetingSchedule||'';
     document.getElementById('cf-intro').value = c.intro||'';
     document.getElementById('cf-desc').value = c.desc||'';
-    if(c.imageUrl) { document.getElementById('cf-img-preview').classList.remove('hidden'); document.getElementById('cf-img-preview-img').src=c.imageUrl; }
+    cfActivities = c.activities && c.activities.length ? [...c.activities] : [''];
+    cfTargets = c.targets && c.targets.length ? [...c.targets] : [''];
+    cfLogoUrl = c.logoUrl||''; cfImageUrl = c.imageUrl||'';
+    if(cfLogoUrl) { document.getElementById('cf-logo-preview').classList.remove('hidden'); document.getElementById('cf-logo-preview-img').src=cfLogoUrl; }
+    else document.getElementById('cf-logo-preview').classList.add('hidden');
+    if(cfImageUrl) { document.getElementById('cf-img-preview').classList.remove('hidden'); document.getElementById('cf-img-preview-img').src=cfImageUrl; }
     else document.getElementById('cf-img-preview').classList.add('hidden');
   }
+  renderCfList('activities'); renderCfList('targets');
 }
-async function previewClubImg(input) {
+async function previewClubImg(input, kind) {
   if(!input.files[0]) return;
   const r = await Store.readFileAsBase64(input.files[0]);
-  document.getElementById('cf-img-preview').classList.remove('hidden');
-  document.getElementById('cf-img-preview-img').src = r.url;
+  if (kind === 'logo') { cfLogoUrl = r.url; document.getElementById('cf-logo-preview').classList.remove('hidden'); document.getElementById('cf-logo-preview-img').src = r.url; }
+  else { cfImageUrl = r.url; document.getElementById('cf-img-preview').classList.remove('hidden'); document.getElementById('cf-img-preview-img').src = r.url; }
 }
 async function saveClub() {
   const idx = document.getElementById('cf-id').value;
-  const imgFile = document.getElementById('cf-img').files[0];
-  let imageUrl = idx!=='' ? clubs[parseInt(idx)].imageUrl||'' : '';
-  if(imgFile) { const r = await Store.readFileAsBase64(imgFile); imageUrl = r.url; }
   const club = {
     id: idx!=='' ? clubs[parseInt(idx)].id : Date.now(),
     name: document.getElementById('cf-name').value,
     category: document.getElementById('cf-category').value,
     room: document.getElementById('cf-room').value,
     president: document.getElementById('cf-president').value,
+    website: document.getElementById('cf-website').value,
     recruitPeriod: document.getElementById('cf-recruit').value,
     meetingSchedule: document.getElementById('cf-meeting').value,
     intro: document.getElementById('cf-intro').value,
     desc: document.getElementById('cf-desc').value,
-    activities:[], targets:[], imageUrl,
+    activities: cfActivities.filter(Boolean),
+    targets: cfTargets.filter(Boolean),
+    logoUrl: cfLogoUrl,
+    imageUrl: cfImageUrl,
   };
   if(idx!=='') clubs[parseInt(idx)] = club; else clubs.push(club);
   await Store.saveClubs(clubs);
@@ -1147,6 +1343,28 @@ let elections=[];
 async function loadElectionTab() {
   elections=await Store.getElection();
   renderElectionList();
+  document.getElementById('elc-intro').value = siteContent.electionIntro || '';
+  if (!siteContent.electionValues) siteContent.electionValues = [];
+  renderElectionValues();
+}
+function renderElectionValues() {
+  const el = document.getElementById('election-values-list');
+  el.innerHTML = (siteContent.electionValues||[]).map((v,i) => `
+    <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+      <div class="flex justify-between mb-2">
+        <span class="text-xs font-bold text-gray-400">가치 ${i+1}</span>
+        <button onclick="removeElectionValue(${i})" class="text-xs text-red-400 hover:text-red-600">삭제</button>
+      </div>
+      <input value="${v.title||''}" placeholder="제목" onchange="siteContent.electionValues[${i}].title=this.value" class="admin-input mb-2">
+      <input value="${v.desc||''}" placeholder="설명" onchange="siteContent.electionValues[${i}].desc=this.value" class="admin-input">
+    </div>`).join('');
+}
+function addElectionValue() { siteContent.electionValues = [...(siteContent.electionValues||[]), {title:'',desc:''}]; renderElectionValues(); }
+function removeElectionValue(i) { siteContent.electionValues = siteContent.electionValues.filter((_,j)=>j!==i); renderElectionValues(); }
+async function saveElectionIntro() {
+  siteContent = { ...siteContent, electionIntro: document.getElementById('elc-intro').value };
+  await Store.saveSiteContent(siteContent);
+  alert('저장되었습니다');
 }
 function renderElectionList() {
   const el=document.getElementById('election-list-admin');
@@ -1179,62 +1397,71 @@ async function saveElection() {
 async function deleteElection(i) { if(!confirm('삭제?')) return; elections.splice(i,1); await Store.saveElection(elections); renderElectionList(); }
 
 /* ── 문의 탭 ── */
-let inquiries=[];
 async function loadContactTab() {
-  inquiries=await Store.getInquiries();
-  renderInquiries();
+  if (!siteContent.faqs) siteContent.faqs = [];
+  renderFaqAdmin();
+  document.getElementById('ask-title-input').value = siteContent.askTitle || '';
+  document.getElementById('ask-desc-input').value = siteContent.askDesc || '';
 }
-function renderInquiries() {
-  const el=document.getElementById('inquiries-list-admin');
-  el.innerHTML=inquiries.map((q,i)=>`
-    <div class="px-5 py-4 ${i<inquiries.length-1?'border-b border-gray-100':''}">
-      <div class="flex items-start gap-3 mb-2">
-        <span class="text-xs px-2 py-0.5 rounded ${q.status==='confirmed'?'bg-green-100 text-green-700':'bg-yellow-100 text-yellow-700'} flex-shrink-0">${q.status==='confirmed'?'답변완료':'답변대기'}</span>
-        <div class="flex-1 min-w-0">
-          <div class="text-xs text-gray-400 mb-1">${q.name} · ${q.email} · ${q.category} · ${q.createdAt}</div>
-          <p class="text-sm text-gray-800 whitespace-pre-line">${q.message}</p>
-        </div>
-        <button onclick="deleteInquiry(${i})" class="text-xs text-red-400 hover:text-red-600 flex-shrink-0">삭제</button>
+function renderFaqAdmin() {
+  const el = document.getElementById('faq-list-admin');
+  el.innerHTML = (siteContent.faqs||[]).map((f,i) => `
+    <div class="bg-white rounded-xl border border-gray-200 p-4">
+      <div class="flex justify-between mb-2">
+        <span class="text-xs font-bold text-gray-400">Q${i+1}</span>
+        <button onclick="removeFaq(${i})" class="text-xs text-red-400 hover:text-red-600">삭제</button>
       </div>
-      ${q.answer?`<div class="bg-blue-50 rounded-lg px-4 py-3 ml-8 text-sm text-gray-700 whitespace-pre-line">${q.answer}</div>`:''}
-      <div class="flex gap-2 mt-2 ml-8">
-        <textarea id="ans-${i}" rows="2" class="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-gray-300" placeholder="답변 입력...">${q.answer||''}</textarea>
-        <button onclick="saveAnswer(${i})" class="px-3 py-2 bg-gray-800 text-white text-xs rounded-lg hover:bg-gray-600">저장</button>
-      </div>
-    </div>`).join('') || '<div class="p-12 text-center text-gray-400">문의가 없습니다</div>';
+      <input value="${f.q||''}" placeholder="질문" onchange="siteContent.faqs[${i}].q=this.value" class="admin-input mb-2">
+      <textarea placeholder="답변" rows="2" onchange="siteContent.faqs[${i}].a=this.value" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none">${f.a||''}</textarea>
+    </div>`).join('');
 }
-async function saveAnswer(i) {
-  inquiries[i].answer=document.getElementById(`ans-${i}`).value;
-  inquiries[i].answeredAt=new Date().toISOString().slice(0,10);
-  inquiries[i].status='confirmed';
-  await Store.saveInquiries(inquiries);
-  renderInquiries();
+function addFaq() { siteContent.faqs = [...(siteContent.faqs||[]), {q:'',a:''}]; renderFaqAdmin(); }
+function removeFaq(i) { siteContent.faqs = siteContent.faqs.filter((_,j)=>j!==i); renderFaqAdmin(); }
+async function saveFaqs() {
+  await Store.saveSiteContent(siteContent);
+  alert('저장되었습니다');
 }
-async function deleteInquiry(i) { if(!confirm('삭제?')) return; inquiries.splice(i,1); await Store.saveInquiries(inquiries); renderInquiries(); }
+async function saveContactSettings() {
+  siteContent = { ...siteContent,
+    askTitle: document.getElementById('ask-title-input').value,
+    askDesc: document.getElementById('ask-desc-input').value,
+  };
+  await Store.saveSiteContent(siteContent);
+  alert('저장되었습니다');
+}
 
 /* ── 이미지 탭 ── */
 let bannerImgs=[];
 async function loadImagesTab() {
-  const [logo, org, loc, clubmap, banners] = await Promise.all([Store.getLogo(),Store.getOrgImage(),Store.getLocationImage(),Store.getClubMapImage(),Store.getBanners()]);
+  const [logo, banners] = await Promise.all([Store.getLogo(),Store.getBanners()]);
   bannerImgs = banners;
   if(logo) document.getElementById('logo-admin-preview').innerHTML=`<img src="${logo}" style="max-height:48px;max-width:100%;object-fit:contain">`;
-  if(org) document.getElementById('org-admin-preview').innerHTML=`<img src="${org}" class="max-h-full max-w-full object-contain">`;
-  if(loc) document.getElementById('location-admin-preview').innerHTML=`<img src="${loc}" class="max-h-full max-w-full object-contain">`;
-  if(clubmap) document.getElementById('clubmap-admin-preview').innerHTML=`<img src="${clubmap}" class="max-h-full max-w-full object-contain">`;
   renderBannerAdmin();
 }
 function renderBannerAdmin() {
   const el=document.getElementById('banner-admin-list');
-  el.innerHTML=[0,1,2].map(i=>`
+  el.innerHTML = bannerImgs.map((img,i)=>`
     <div class="space-y-2">
       <div class="w-40 h-24 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center overflow-hidden bg-gray-50">
-        ${bannerImgs[i]?`<img src="${bannerImgs[i]}" class="max-h-full max-w-full object-contain">`:'<span class="text-xs text-gray-400">배너 '+(i+1)+'</span>'}
+        ${img?`<img src="${img}" class="max-h-full max-w-full object-contain">`:'<span class="text-xs text-gray-400">배너 '+(i+1)+'</span>'}
       </div>
       <label class="cursor-pointer block px-2 py-1 bg-gray-800 text-white text-xs rounded text-center hover:bg-gray-700">업로드
         <input type="file" accept="image/*" class="hidden" onchange="uploadBanner(${i},this)">
       </label>
-      ${bannerImgs[i]?`<button onclick="deleteBanner(${i})" class="block w-full px-2 py-1 border border-red-300 text-red-500 text-xs rounded hover:bg-red-50">삭제</button>`:''}
-    </div>`).join('');
+      <button onclick="removeBannerSlide(${i})" class="block w-full px-2 py-1 border border-red-300 text-red-500 text-xs rounded hover:bg-red-50">배너 삭제</button>
+    </div>`).join('') + `
+    <button onclick="addBannerSlide()" class="w-40 h-24 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center text-gray-400 hover:border-gray-500 hover:text-gray-600 text-sm">+ 배너 추가</button>`;
+}
+async function addBannerSlide() {
+  bannerImgs = [...bannerImgs, ''];
+  await Store.saveBanners(bannerImgs);
+  renderBannerAdmin();
+}
+async function removeBannerSlide(i) {
+  if(!confirm('이 배너를 삭제하시겠습니까?')) return;
+  bannerImgs = bannerImgs.filter((_,j)=>j!==i);
+  await Store.saveBanners(bannerImgs);
+  renderBannerAdmin();
 }
 async function uploadLogo(input) {
   const url = await Store.compressImage(input.files[0]);
@@ -1246,12 +1473,10 @@ async function uploadImg(type, input) {
   const r=await Store.readFileAsBase64(input.files[0]);
   if(type==='org') { await Store.saveOrgImage(r.url); document.getElementById('org-admin-preview').innerHTML=`<img src="${r.url}" class="max-h-full max-w-full object-contain">`; }
   else if(type==='location') { await Store.saveLocationImage(r.url); document.getElementById('location-admin-preview').innerHTML=`<img src="${r.url}" class="max-h-full max-w-full object-contain">`; }
-  else if(type==='clubmap') { await Store.saveClubMapImage(r.url); document.getElementById('clubmap-admin-preview').innerHTML=`<img src="${r.url}" class="max-h-full max-w-full object-contain">`; }
 }
 async function deleteImg(type) {
   if(type==='org') { await Store.saveOrgImage(''); document.getElementById('org-admin-preview').innerHTML='<span class="text-xs text-gray-400">이미지 없음</span>'; }
   else if(type==='location') { await Store.saveLocationImage(''); document.getElementById('location-admin-preview').innerHTML='<span class="text-xs text-gray-400">이미지 없음</span>'; }
-  else if(type==='clubmap') { await Store.saveClubMapImage(''); document.getElementById('clubmap-admin-preview').innerHTML='<span class="text-xs text-gray-400">이미지 없음</span>'; }
 }
 async function uploadBanner(i, input) {
   const r=await Store.readFileAsBase64(input.files[0]);
@@ -1259,23 +1484,31 @@ async function uploadBanner(i, input) {
   await Store.saveBanners([...bannerImgs]);
   renderBannerAdmin();
 }
-async function deleteBanner(i) { bannerImgs[i]=''; await Store.saveBanners([...bannerImgs]); renderBannerAdmin(); }
 
 /* ── 사이트 설정 탭 ── */
 function loadSettingsTab() {
   document.getElementById('st-instagram').value=siteContent.instagramUrl||'';
   document.getElementById('st-kakao').value=siteContent.kakaoUrl||'';
   document.getElementById('st-footer-title').value=siteContent.footerTitle||'';
-  document.getElementById('st-footer-copy').value=siteContent.footerCopyright||'';
+  if (!siteContent.bannerSlides) siteContent.bannerSlides = [];
+  renderBannerSlidesList();
+}
+function renderBannerSlidesList() {
   const bsl=document.getElementById('banner-slides-list');
   bsl.innerHTML=(siteContent.bannerSlides||[]).map((s,i)=>`
     <div class="space-y-2 border border-gray-100 rounded-lg p-3">
-      <div><label class="text-xs text-gray-500">배너 ${i+1} 제목</label><input value="${s.title||''}" onchange="siteContent.bannerSlides[${i}].title=this.value" class="admin-input"></div>
-      <div><label class="text-xs text-gray-500">배너 ${i+1} 부제목</label><input value="${s.subtitle||''}" onchange="siteContent.bannerSlides[${i}].subtitle=this.value" class="admin-input"></div>
+      <div class="flex justify-between items-center">
+        <span class="text-xs font-bold text-gray-400">배너 ${i+1}</span>
+        <button onclick="removeBannerSlideText(${i})" class="text-xs text-red-400 hover:text-red-600">삭제</button>
+      </div>
+      <div><label class="text-xs text-gray-500">제목</label><input value="${s.title||''}" onchange="siteContent.bannerSlides[${i}].title=this.value" class="admin-input"></div>
+      <div><label class="text-xs text-gray-500">부제목</label><input value="${s.subtitle||''}" onchange="siteContent.bannerSlides[${i}].subtitle=this.value" class="admin-input"></div>
     </div>`).join('');
 }
+function addBannerSlideText() { siteContent.bannerSlides = [...(siteContent.bannerSlides||[]), {title:'',subtitle:''}]; renderBannerSlidesList(); }
+function removeBannerSlideText(i) { siteContent.bannerSlides = siteContent.bannerSlides.filter((_,j)=>j!==i); renderBannerSlidesList(); }
 async function saveSettings() {
-  siteContent={...siteContent,instagramUrl:document.getElementById('st-instagram').value,kakaoUrl:document.getElementById('st-kakao').value,footerTitle:document.getElementById('st-footer-title').value,footerCopyright:document.getElementById('st-footer-copy').value};
+  siteContent={...siteContent,instagramUrl:document.getElementById('st-instagram').value,kakaoUrl:document.getElementById('st-kakao').value,footerTitle:document.getElementById('st-footer-title').value};
   await Store.saveSiteContent(siteContent);
   alert('저장되었습니다');
 }

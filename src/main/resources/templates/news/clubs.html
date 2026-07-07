@@ -6,17 +6,20 @@
 <div th:replace="~{fragments/subheader :: news('clubs')}"></div>
 <div class="page-content">
   <h2 class="text-2xl font-bold text-gray-800 mb-6">동아리 소식</h2>
-  <div id="empty-msg" class="text-gray-400 text-sm text-center py-12 hidden">등록된 소식이 없습니다. 관리자 페이지에서 추가해주세요.</div>
-  <div id="club-news-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+  <div id="club-news-body"></div>
 </div>
 <footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
 <script>
-document.addEventListener('DOMContentLoaded', async () => {
-  await Store.initNav();
-  const news = await Store.getClubNews();
-  document.getElementById('empty-msg').classList.toggle('hidden', news.length !== 0);
-  document.getElementById('club-news-grid').innerHTML = news.map(n => `
-    <div class="card p-5">
+let clubNewsList = [];
+
+function showList() {
+  document.getElementById('club-news-body').innerHTML = `
+    <div id="empty-msg" class="text-gray-400 text-sm text-center py-12 hidden">등록된 소식이 없습니다. 관리자 페이지에서 추가해주세요.</div>
+    <div id="club-news-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>`;
+  document.getElementById('empty-msg').classList.toggle('hidden', clubNewsList.length !== 0);
+  const grid = document.getElementById('club-news-grid');
+  grid.innerHTML = clubNewsList.map((n,i) => `
+    <div class="card p-5 cursor-pointer" data-i="${i}">
       ${n.imageUrl ? `<img src="${n.imageUrl}" alt="" class="w-full h-40 object-cover rounded-lg mb-3">` : ''}
       <div class="flex items-center gap-2 mb-2">
         <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium">${n.category || ''}</span>
@@ -24,8 +27,34 @@ document.addEventListener('DOMContentLoaded', async () => {
       </div>
       <p class="text-xs text-gray-400 mb-1">[${n.club || ''}]</p>
       <h3 class="font-semibold text-gray-800 mb-1">${n.title}</h3>
-      ${n.content ? `<p class="text-gray-500 text-sm leading-relaxed">${n.content}</p>` : ''}
+      ${n.content ? `<p class="text-gray-500 text-sm leading-relaxed line-clamp-2">${n.content}</p>` : ''}
     </div>`).join('');
+  grid.querySelectorAll('[data-i]').forEach(card => card.addEventListener('click', () => showDetail(clubNewsList[card.dataset.i])));
+}
+
+function showDetail(n) {
+  document.getElementById('club-news-body').innerHTML = `
+    <div class="bg-white rounded-xl border border-gray-200 p-6">
+      <button id="back-btn" class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 mb-5 transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        목록으로
+      </button>
+      <div class="flex items-center gap-2 mb-2">
+        <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium">${n.category || ''}</span>
+        <span class="text-xs text-gray-400">${n.date || ''}</span>
+      </div>
+      <p class="text-xs text-gray-400 mb-1">[${n.club || ''}]</p>
+      <h3 class="text-xl font-bold text-gray-800 mb-4">${n.title}</h3>
+      ${n.imageUrl ? `<img src="${n.imageUrl}" alt="" class="w-full rounded-xl object-cover mb-4">` : ''}
+      <div class="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap border-t border-gray-100 pt-4">${n.content || '내용이 없습니다.'}</div>
+    </div>`;
+  document.getElementById('back-btn').addEventListener('click', showList);
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await Store.initNav();
+  clubNewsList = await Store.getClubNews();
+  showList();
 });
 </script>
 </body>
