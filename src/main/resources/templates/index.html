@@ -124,7 +124,7 @@ const dots = document.getElementById('banner-dots');
 dots.innerHTML = Array.from({length:slideCount},(_,i)=>`<button class="banner-dot w-2 h-2 rounded-full transition-all ${i===0?'bg-white':'bg-white/40'}"></button>`).join('');
 dots.querySelectorAll('.banner-dot').forEach((btn,i)=>btn.addEventListener('click',()=>showSlide(i)));
 
-function showSlide(i, immediate) {
+function showSlide(i, isFirst) {
   cur = i;
   const img = BANNER_IMAGES[i]||'';
   const slide = BANNER_SLIDES[i];
@@ -133,25 +133,27 @@ function showSlide(i, immediate) {
   const bannerText = document.getElementById('banner-text');
 
   function apply() {
-    if(img){ bannerImg.src=img; bannerImg.classList.remove('hidden'); bannerBg.style.display='none'; }
+    if(img){ bannerImg.src=img; bannerImg.style.opacity='0'; bannerImg.classList.remove('hidden'); bannerBg.style.display='none'; }
     else { bannerImg.classList.add('hidden'); bannerBg.style.display=''; }
     if(slide&&(slide.title||slide.subtitle)){
       document.getElementById('banner-title').textContent=slide.title||'';
       document.getElementById('banner-subtitle').textContent=slide.subtitle||'';
+      bannerText.style.opacity='0';
       bannerText.style.display='flex';
     } else { bannerText.style.display='none'; }
-    bannerImg.style.opacity='1';
-    bannerText.style.opacity='1';
-    // 슬라이드가 떠 있는 동안 천천히 확대되는 켄 번즈 효과
     bannerImg.style.transition='opacity .7s ease';
     bannerImg.style.transform='scale(1)';
+    // 다음 프레임에서 올려야 opacity 0 → 1 전환(페이드인)이 실제로 애니메이션된다
     requestAnimationFrame(() => {
+      bannerImg.style.opacity='1';
+      bannerText.style.opacity='1';
+      // 슬라이드가 떠 있는 동안 천천히 확대되는 켄 번즈 효과
       bannerImg.style.transition='opacity .7s ease, transform 6s ease-out';
       bannerImg.style.transform='scale(1.08)';
     });
   }
 
-  if (immediate) {
+  if (isFirst) {
     apply();
   } else {
     bannerImg.style.opacity='0';
