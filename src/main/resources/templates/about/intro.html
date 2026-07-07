@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const c = await Store.getSiteContent();
   document.getElementById('intro-text').textContent = c.aboutIntro;
   document.getElementById('vision-text').textContent = c.aboutVision;
+  Store.reveal();
 });
 </script>
 </body>

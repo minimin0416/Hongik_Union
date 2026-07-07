@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await Store.initNav();
   announcements = await Store.getElection();
   showList();
+  Store.reveal();
 });
 </script>
 </body>

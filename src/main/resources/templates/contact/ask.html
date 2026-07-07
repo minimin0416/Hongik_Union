@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const c = await Store.getSiteContent();
   const link = document.getElementById('kakao-link');
   if (c.kakaoUrl) link.href = c.kakaoUrl; else link.removeAttribute('target');
+  Store.reveal();
 });
 </script>
 </body>

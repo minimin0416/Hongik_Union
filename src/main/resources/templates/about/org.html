@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('org-wrap').innerHTML = img
     ? `<div class="flex justify-center"><img src="${img}" alt="조직도" class="max-w-full rounded-xl border border-gray-200 shadow-sm"></div>`
     : DEFAULT_ORG;
+  Store.reveal();
 });
 </script>
 </body>

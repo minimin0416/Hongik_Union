@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       <td class="text-center font-bold text-red-500">+${p.points}</td>
       <td class="text-center text-gray-400 text-xs hidden md:table-cell">${p.date}</td>
     </tr>`).join('') : '<tr><td colspan="4" class="text-center text-gray-400 py-10">벌점 내역이 없습니다</td></tr>';
+  Store.reveal();
 });
 </script>
 </body>

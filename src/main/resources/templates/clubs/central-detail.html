@@ -94,6 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const clubs = await Store.getClubs();
   const club = clubs.find(c => c.id === id);
   if (club) renderClub(club); else renderNotFound();
+  Store.reveal();
 });
 </script>
 </body>

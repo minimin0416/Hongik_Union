@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     </div>`;
   document.getElementById('rules-open').addEventListener('click', () => Store.openAsBlob(file));
   document.getElementById('rules-download').addEventListener('click', () => Store.downloadFile(file.url, file.name));
+  Store.reveal();
 });
 </script>
 </body>

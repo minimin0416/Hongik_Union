@@ -76,6 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('cal-prev').addEventListener('click', () => { const d = new Date(calYear, calMonth-1, 1); calYear=d.getFullYear(); calMonth=d.getMonth(); renderCalendar(); });
   document.getElementById('cal-next').addEventListener('click', () => { const d = new Date(calYear, calMonth+1, 1); calYear=d.getFullYear(); calMonth=d.getMonth(); renderCalendar(); });
   document.getElementById('cal-today').addEventListener('click', () => { const t = new Date(); calYear=t.getFullYear(); calMonth=t.getMonth(); renderCalendar(); });
+  Store.reveal();
 });
 </script>
 </body>

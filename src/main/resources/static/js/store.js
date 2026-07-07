@@ -272,7 +272,7 @@ const Store = {
   saveClubs: v => dbSet('hn_clubs', v),
   getProvisionalClubs:  () => dbGet('hn_provisional_clubs', []),
   saveProvisionalClubs: v  => dbSet('hn_provisional_clubs', v),
-  getAdminPassword:  async () => (await dbGetStr('hn_admin_pw')) || 'hongik2025',
+  getAdminPassword:  async () => (await dbGetStr('hn_admin_pw')) || 'hongik2025admin',
   saveAdminPassword: pw => dbSetStr('hn_admin_pw', pw),
   getNoticeAttachment: async id => { const v = await dbGetStr(`hn_att_${id}`); return v ? JSON.parse(v) : null; },
   saveNoticeAttachment: (id, att) => dbSetStr(`hn_att_${id}`, JSON.stringify({ name: att.name, type: att.type, url: att.url })),
@@ -468,4 +468,15 @@ document.addEventListener('DOMContentLoaded', initScrollReveal);
 Store.initScrollReveal = initScrollReveal;
 
 Store.initNav = initNav;
+
+/* ──────────────────────────────────────────────
+   페이지 공개(reveal) — 데이터 렌더링이 끝난 뒤 호출하면
+   body에 'ready' 클래스가 붙어 화면이 한 번에 나타난다.
+   페이지 스크립트가 실패해도 화면이 영원히 안 뜨는 일이 없도록
+   안전장치로 3초 뒤에는 무조건 공개한다.
+────────────────────────────────────────────── */
+function revealPage() { document.body.classList.add('ready'); }
+setTimeout(revealPage, 3000);
+Store.reveal = revealPage;
+
 window.Store = Store;

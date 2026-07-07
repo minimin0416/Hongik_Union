@@ -608,7 +608,8 @@
 </style>
 
 <script>
-let currentAdminPw = 'hongik2025';
+Store.reveal();
+let currentAdminPw = 'hongik2025admin';
 Store.getAdminPassword().then(pw => {
   currentAdminPw = pw;
   if (localStorage.getItem('admin_session') === 'true') {

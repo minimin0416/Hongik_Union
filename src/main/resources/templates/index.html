@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 배너
   let cur = 0;
-  const slideCount = slides.length || 3;
+  const slideCount = Math.max(slides.length, bannerImgs.length) || 3;
   const dots = document.getElementById('banner-dots');
   dots.innerHTML = Array.from({length:slideCount},(_,i)=>`<button class="banner-dot w-2 h-2 rounded-full transition-all ${i===0?'bg-white':'bg-white/40'}"></button>`).join('');
   dots.querySelectorAll('.banner-dot').forEach((btn,i)=>btn.addEventListener('click',()=>showSlide(i)));
@@ -154,6 +154,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const lw = document.getElementById('location-wrap');
     lw.innerHTML = `<img src="${locationImg}" alt="오시는 길" class="w-full h-full object-contain">`;
   }
+  Store.reveal();
 });
 </script>
 </body>

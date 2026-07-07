@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       <td class="text-center">${f.attachment ? `<button class="dl-btn text-xs text-blue-600 hover:underline font-medium" data-url="${f.attachment.url}" data-name="${f.attachment.name}">📎 다운로드</button>` : '<span class="text-xs text-gray-300">준비 중</span>'}</td>
     </tr>`).join('') : '<tr><td colspan="5" class="text-center text-gray-400 py-10">등록된 양식이 없습니다</td></tr>';
   rows.querySelectorAll('.dl-btn').forEach(btn => btn.addEventListener('click', () => Store.downloadFile(btn.dataset.url, btn.dataset.name)));
+  Store.reveal();
 });
 </script>
 </body>

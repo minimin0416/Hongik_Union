@@ -97,6 +97,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   notices.forEach(n => { if (n.hasImages) Store.getNoticeImages(n.id); });
   document.getElementById('notice-count').textContent = `총 ${notices.length}건`;
   showList();
+  Store.reveal();
 });
 </script>
 </body>

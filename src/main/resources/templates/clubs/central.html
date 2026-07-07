@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   allClubs = await Store.getClubs();
   document.getElementById('search-input').addEventListener('input', render);
   render();
+  Store.reveal();
 });
 </script>
 </body>
