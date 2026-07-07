@@ -5,7 +5,7 @@
 <div th:replace="~{fragments/nav :: nav}"></div>
 <div th:replace="~{fragments/subheader :: about('location')}"></div>
 <div class="page-content">
-  <div class="max-w-3xl">
+  <div class="max-w-3xl sr-base" data-sr="fade-up">
     <h2 class="text-2xl font-bold text-gray-800 mb-6">오시는 길</h2>
     <div class="rounded-xl overflow-hidden mb-6" id="map-wrap" style="min-height:280px">
       <img th:if="${not #strings.isEmpty(locationImage)}" th:src="${locationImage}" alt="오시는 길 지도" class="w-full object-cover rounded-xl">

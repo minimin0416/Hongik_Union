@@ -6,7 +6,7 @@
 <div th:replace="~{fragments/subheader :: info('penalty')}"></div>
 <div class="page-content">
   <h2 class="text-2xl font-bold text-gray-800 mb-6">벌점 현황</h2>
-  <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+  <div class="bg-white border border-gray-200 rounded-xl overflow-hidden sr-base" data-sr="fade-up">
     <table class="data-table">
       <thead><tr><th>동아리</th><th>사유</th><th class="w-16 text-center">점수</th><th class="w-28 text-center hidden md:table-cell">날짜</th></tr></thead>
       <tbody id="penalty-rows">

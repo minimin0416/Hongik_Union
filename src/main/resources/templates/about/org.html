@@ -6,7 +6,7 @@
 <div th:replace="~{fragments/subheader :: about('org')}"></div>
 <div class="page-content">
   <h2 class="text-2xl font-bold text-gray-800 mb-6">조직도</h2>
-  <div id="org-wrap">
+  <div id="org-wrap" class="sr-base" data-sr="fade-up">
     <div th:if="${not #strings.isEmpty(orgImage)}" class="flex justify-center">
       <img th:src="${orgImage}" alt="조직도" class="max-w-full rounded-xl border border-gray-200 shadow-sm">
     </div>

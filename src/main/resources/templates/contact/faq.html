@@ -5,7 +5,7 @@
 <div th:replace="~{fragments/nav :: nav}"></div>
 <div th:replace="~{fragments/subheader :: contact('faq')}"></div>
 <div class="page-content">
-  <div class="max-w-3xl">
+  <div class="max-w-3xl sr-base" data-sr="fade-up">
     <h2 class="text-2xl font-bold text-gray-800 mb-6">자주 묻는 질문</h2>
     <div class="space-y-2" id="faq-list">
       <p th:if="${#lists.isEmpty(content.faqs)}" class="text-gray-400 text-sm text-center py-8">FAQ가 없습니다. 관리자 페이지에서 추가해주세요.</p>

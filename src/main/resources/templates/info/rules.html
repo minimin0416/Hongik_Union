@@ -6,7 +6,7 @@
 <div th:replace="~{fragments/subheader :: info('rules')}"></div>
 <div class="page-content">
   <h2 class="text-2xl font-bold text-gray-800 mb-6">규칙</h2>
-  <div class="space-y-3" id="rules-list">
+  <div class="space-y-3 sr-base" data-sr="fade-up" id="rules-list">
     <p th:if="${#lists.isEmpty(content.infoRules)}" class="text-gray-400 text-sm text-center py-8">등록된 규칙이 없습니다.</p>
     <div th:each="r, iter : ${content.infoRules}" class="bg-white border border-gray-200 rounded-xl overflow-hidden">
       <button class="rule-toggle w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors" th:attr="data-i=${iter.index}">
