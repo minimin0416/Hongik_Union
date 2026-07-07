@@ -2,42 +2,34 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('동아리증명서')}"></head>
 <body class="min-h-screen" style="background:#e8e8e8">
-<div th:replace="~{fragments/loader :: loader}"></div>
 <div th:replace="~{fragments/nav :: nav}"></div>
 <div th:replace="~{fragments/subheader :: info('club-cert')}"></div>
 <div class="page-content">
   <div class="max-w-lg">
     <h2 class="text-2xl font-bold text-gray-800 mb-2">동아리증명서</h2>
-    <p class="text-gray-500 text-sm mb-8" id="cert-desc"></p>
-    <div id="cert-file-wrap"></div>
-    <div id="cert-submit-wrap" class="mt-6 p-4 bg-gray-50 rounded-xl text-sm text-gray-600 space-y-1"></div>
+    <p class="text-gray-500 text-sm mb-8" th:text="${content.clubCertDesc}"></p>
+    <div id="cert-file-wrap">
+      <div th:if="${certFile}" class="border border-gray-200 rounded-xl p-5 bg-white flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <span class="text-sm font-medium text-gray-700 truncate" th:text="${certFile.name}"></span>
+        </div>
+        <button id="cert-dl" class="btn-primary flex-shrink-0" th:attr="data-url=${certFile.url},data-name=${certFile.name}">다운로드</button>
+      </div>
+      <div th:unless="${certFile}" class="border border-dashed border-gray-300 rounded-xl p-8 text-center text-gray-400 text-sm">등록된 양식 파일이 없습니다.</div>
+    </div>
+    <div id="cert-submit-wrap" class="mt-6 p-4 bg-gray-50 rounded-xl text-sm text-gray-600 space-y-1">
+      <p class="font-semibold text-gray-700 mb-2" th:text="${content.certSubmitTitle}"></p>
+      <p th:each="m : ${content.certSubmitMethods}" th:text="'• ' + ${m}"></p>
+    </div>
   </div>
 </div>
-<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
+<div th:replace="~{fragments/footer :: footer}"></div>
 <script>
-document.addEventListener('DOMContentLoaded', async () => {
-  await Store.initNav();
-  const [file, c] = await Promise.all([Store.getClubCertFile(), Store.getSiteContent()]);
-  document.getElementById('cert-desc').textContent = c.clubCertDesc || '';
-  document.getElementById('cert-file-wrap').innerHTML = file ? `
-    <div class="border border-gray-200 rounded-xl p-5 bg-white flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3 min-w-0">
-        <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
-          <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-        </div>
-        <span class="text-sm font-medium text-gray-700 truncate">${file.name}</span>
-      </div>
-      <button id="cert-dl" class="btn-primary flex-shrink-0">다운로드</button>
-    </div>` : `<div class="border border-dashed border-gray-300 rounded-xl p-8 text-center text-gray-400 text-sm">등록된 양식 파일이 없습니다.</div>`;
-  if (file) document.getElementById('cert-dl').addEventListener('click', () => Store.downloadFile(file.url, file.name));
-
-  const submitTitle = c.certSubmitTitle || '제출 방법';
-  const methods = c.certSubmitMethods || [];
-  document.getElementById('cert-submit-wrap').innerHTML = `
-    <p class="font-semibold text-gray-700 mb-2">${submitTitle}</p>
-    ${methods.map(m => `<p>• ${m}</p>`).join('')}`;
-  Store.reveal();
-});
+const dl = document.getElementById('cert-dl');
+if (dl) dl.addEventListener('click', () => Store.downloadFile(dl.dataset.url, dl.dataset.name));
 </script>
 </body>
 </html>

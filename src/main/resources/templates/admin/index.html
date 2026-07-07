@@ -608,7 +608,6 @@
 </style>
 
 <script>
-Store.reveal();
 let currentAdminPw = 'hongik2025admin';
 Store.getAdminPassword().then(pw => {
   currentAdminPw = pw;
@@ -703,7 +702,6 @@ async function changeAdminPassword() {
 }
 
 async function initAdmin() {
-  await Store.initNav();
   siteContent = await Store.getSiteContent();
   loadImagesTab();
   loadSettingsTab();

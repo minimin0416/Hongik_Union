@@ -10,33 +10,6 @@
 .leading-3\.5 { line-height: 0.875rem; }
 
 /* ── Scroll Reveal (원본 Next.js 버전과 동일한 스크롤 페이드인 효과) ── */
-/* 데이터가 다 채워지기 전까지 실제 콘텐츠를 숨기고 #page-loader만 보여줘서,
-   요소가 하나씩 팝업되는 대신 한 번에 나타나도록 한다.
-   store.js의 Store.reveal()이 body에 'ready' 클래스를 붙인다. */
-body > *:not(#page-loader) { opacity: 0; }
-body.ready > *:not(#page-loader) { animation: sr-fade-in 0.3s ease both; }
-
-#page-loader {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #e8e8e8;
-  transition: opacity 0.25s ease;
-}
-body.ready #page-loader { opacity: 0; pointer-events: none; }
-.loader-spinner {
-  width: 36px;
-  height: 36px;
-  border: 3px solid #d1d5db;
-  border-top-color: #1e3a8a;
-  border-radius: 50%;
-  animation: loader-spin 0.7s linear infinite;
-}
-@keyframes loader-spin { to { transform: rotate(360deg); } }
-
 .sr-base { opacity: 0; }
 
 .sr-base.sr-visible {

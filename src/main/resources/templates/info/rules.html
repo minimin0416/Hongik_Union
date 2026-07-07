@@ -2,41 +2,33 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('규칙')}"></head>
 <body class="min-h-screen" style="background:#e8e8e8">
-<div th:replace="~{fragments/loader :: loader}"></div>
 <div th:replace="~{fragments/nav :: nav}"></div>
 <div th:replace="~{fragments/subheader :: info('rules')}"></div>
 <div class="page-content">
   <h2 class="text-2xl font-bold text-gray-800 mb-6">규칙</h2>
-  <div class="space-y-3" id="rules-list"></div>
-</div>
-<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-  await Store.initNav();
-  const c = await Store.getSiteContent();
-  const rules = c.infoRules || [];
-  const el = document.getElementById('rules-list');
-  el.innerHTML = rules.length ? rules.map((r,i) => `
-    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
-      <button class="rule-toggle w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors" data-i="${i}">
-        <span class="font-semibold text-gray-800">${r.title}</span>
-        <svg id="rule-icon-${i}" class="w-5 h-5 text-gray-400 flex-shrink-0 ml-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  <div class="space-y-3" id="rules-list">
+    <p th:if="${#lists.isEmpty(content.infoRules)}" class="text-gray-400 text-sm text-center py-8">등록된 규칙이 없습니다.</p>
+    <div th:each="r, iter : ${content.infoRules}" class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+      <button class="rule-toggle w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors" th:attr="data-i=${iter.index}">
+        <span class="font-semibold text-gray-800" th:text="${r.title}"></span>
+        <svg th:id="'rule-icon-' + ${iter.index}" class="w-5 h-5 text-gray-400 flex-shrink-0 ml-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
       </button>
-      <div id="rule-answer-${i}" class="hidden px-5 pb-4">
-        <p class="text-gray-500 text-sm leading-relaxed">${r.desc}</p>
+      <div th:id="'rule-answer-' + ${iter.index}" class="hidden px-5 pb-4">
+        <p class="text-gray-500 text-sm leading-relaxed" th:text="${r.desc}"></p>
       </div>
-    </div>`).join('') : '<p class="text-gray-400 text-sm text-center py-8">등록된 규칙이 없습니다.</p>';
-
-  document.querySelectorAll('.rule-toggle').forEach(btn => btn.addEventListener('click', () => {
-    const i = btn.dataset.i;
-    const ans = document.getElementById(`rule-answer-${i}`);
-    const icon = document.getElementById(`rule-icon-${i}`);
-    const isOpen = !ans.classList.contains('hidden');
-    ans.classList.toggle('hidden');
-    icon.style.transform = isOpen ? '' : 'rotate(180deg)';
-  }));
-  Store.reveal();
-});
+    </div>
+  </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script>
+document.querySelectorAll('.rule-toggle').forEach(btn => btn.addEventListener('click', () => {
+  const i = btn.dataset.i;
+  const ans = document.getElementById(`rule-answer-${i}`);
+  const icon = document.getElementById(`rule-icon-${i}`);
+  const isOpen = !ans.classList.contains('hidden');
+  ans.classList.toggle('hidden');
+  icon.style.transform = isOpen ? '' : 'rotate(180deg)';
+}));
 </script>
 </body>
 </html>

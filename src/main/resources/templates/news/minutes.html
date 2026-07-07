@@ -2,7 +2,6 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('회의록')}"></head>
 <body class="min-h-screen" style="background:#e8e8e8">
-<div th:replace="~{fragments/loader :: loader}"></div>
 <div th:replace="~{fragments/nav :: nav}"></div>
 <div th:replace="~{fragments/subheader :: news('minutes')}"></div>
 <div class="page-content">
@@ -10,26 +9,25 @@
   <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
     <table class="data-table">
       <thead><tr><th>회의 제목</th><th class="w-28 text-center">날짜</th><th class="w-20 text-center hidden sm:table-cell">참석</th><th class="w-24 text-center">파일</th></tr></thead>
-      <tbody id="minutes-rows"></tbody>
+      <tbody id="minutes-rows">
+        <tr th:if="${#lists.isEmpty(minutes)}"><td colspan="4" class="text-center text-gray-400 py-10">등록된 회의록이 없습니다</td></tr>
+        <tr th:each="m : ${minutes}">
+          <td class="font-medium text-gray-800" th:text="${m.title}"></td>
+          <td class="text-center text-gray-400 text-xs" th:text="${m.date}"></td>
+          <td class="text-center text-gray-500 text-sm hidden sm:table-cell" th:text="${m.attendees}"></td>
+          <td class="text-center">
+            <button th:if="${m.get('attachment')}" class="dl-btn text-xs text-blue-600 hover:underline font-medium"
+                    th:attr="data-url=${m.get('attachment').url},data-name=${m.get('attachment').name}">📎 다운로드</button>
+            <span th:unless="${m.get('attachment')}" class="text-xs text-gray-300">—</span>
+          </td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </div>
-<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
+<div th:replace="~{fragments/footer :: footer}"></div>
 <script>
-document.addEventListener('DOMContentLoaded', async () => {
-  await Store.initNav();
-  const list = await Store.getMinutes();
-  const rows = document.getElementById('minutes-rows');
-  rows.innerHTML = list.length ? list.map(m => `
-    <tr>
-      <td class="font-medium text-gray-800">${m.title}</td>
-      <td class="text-center text-gray-400 text-xs">${m.date}</td>
-      <td class="text-center text-gray-500 text-sm hidden sm:table-cell">${m.attendees || ''}</td>
-      <td class="text-center">${m.attachment ? `<button class="dl-btn text-xs text-blue-600 hover:underline font-medium" data-url="${m.attachment.url}" data-name="${m.attachment.name}">📎 다운로드</button>` : '<span class="text-xs text-gray-300">—</span>'}</td>
-    </tr>`).join('') : '<tr><td colspan="4" class="text-center text-gray-400 py-10">등록된 회의록이 없습니다</td></tr>';
-  rows.querySelectorAll('.dl-btn').forEach(btn => btn.addEventListener('click', () => Store.downloadFile(btn.dataset.url, btn.dataset.name)));
-  Store.reveal();
-});
+document.querySelectorAll('.dl-btn').forEach(btn => btn.addEventListener('click', () => Store.downloadFile(btn.dataset.url, btn.dataset.name)));
 </script>
 </body>
 </html>

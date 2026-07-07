@@ -2,7 +2,6 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('회칙')}"></head>
 <body class="min-h-screen" style="background:#e8e8e8">
-<div th:replace="~{fragments/loader :: loader}"></div>
 <div th:replace="~{fragments/nav :: nav}"></div>
 <div th:replace="~{fragments/subheader :: about('rules')}"></div>
 <div class="page-content">
@@ -11,19 +10,18 @@
     <div id="rules-wrap"></div>
   </div>
 </div>
-<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-  await Store.initNav();
-  const c = await Store.getSiteContent();
-  const file = c.rulesFile;
-  const wrap = document.getElementById('rules-wrap');
-  if (!file) {
-    wrap.innerHTML = `<div class="bg-white border border-gray-200 rounded-xl p-12 flex items-center justify-center">
-      <p class="text-gray-400 text-sm">등록된 회칙 파일이 없습니다.</p>
-    </div>`;
-    return;
-  }
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:inline="javascript">
+/*<![CDATA[*/
+const file = /*[[${content.rulesFile}]]*/ null;
+/*]]>*/
+
+const wrap = document.getElementById('rules-wrap');
+if (!file) {
+  wrap.innerHTML = `<div class="bg-white border border-gray-200 rounded-xl p-12 flex items-center justify-center">
+    <p class="text-gray-400 text-sm">등록된 회칙 파일이 없습니다.</p>
+  </div>`;
+} else {
   const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
   wrap.innerHTML = `
     ${isPdf ? `<div class="hidden md:block bg-white border border-gray-200 rounded-xl overflow-hidden mb-3">
@@ -47,8 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     </div>`;
   document.getElementById('rules-open').addEventListener('click', () => Store.openAsBlob(file));
   document.getElementById('rules-download').addEventListener('click', () => Store.downloadFile(file.url, file.name));
-  Store.reveal();
-});
+}
 </script>
 </body>
 </html>

@@ -2,7 +2,6 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('일정')}"></head>
 <body class="min-h-screen" style="background:#e8e8e8">
-<div th:replace="~{fragments/loader :: loader}"></div>
 <div th:replace="~{fragments/nav :: nav}"></div>
 <div th:replace="~{fragments/subheader :: news('calendar')}"></div>
 <div class="page-content">
@@ -17,11 +16,15 @@
   </div>
   <div class="bg-white rounded-xl border border-gray-200 overflow-hidden" id="calendar-wrap"></div>
 </div>
-<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
-<script>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:inline="javascript">
+/*<![CDATA[*/
+let calEvents = /*[[${calendarEvents}]]*/ [];
+/*]]>*/
+
 const DAY_NAMES = ['일','월','화','수','목','금','토'];
 function toDateStr(y,m,d){ return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
-let calEvents = [], calYear, calMonth;
+let calYear, calMonth;
 
 function renderCalendar() {
   const today = new Date();
@@ -68,17 +71,12 @@ function renderCalendar() {
   `;
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await Store.initNav();
-  calEvents = await Store.getCalendarEvents();
-  const now = new Date();
-  calYear = now.getFullYear(); calMonth = now.getMonth();
-  renderCalendar();
-  document.getElementById('cal-prev').addEventListener('click', () => { const d = new Date(calYear, calMonth-1, 1); calYear=d.getFullYear(); calMonth=d.getMonth(); renderCalendar(); });
-  document.getElementById('cal-next').addEventListener('click', () => { const d = new Date(calYear, calMonth+1, 1); calYear=d.getFullYear(); calMonth=d.getMonth(); renderCalendar(); });
-  document.getElementById('cal-today').addEventListener('click', () => { const t = new Date(); calYear=t.getFullYear(); calMonth=t.getMonth(); renderCalendar(); });
-  Store.reveal();
-});
+const now = new Date();
+calYear = now.getFullYear(); calMonth = now.getMonth();
+renderCalendar();
+document.getElementById('cal-prev').addEventListener('click', () => { const d = new Date(calYear, calMonth-1, 1); calYear=d.getFullYear(); calMonth=d.getMonth(); renderCalendar(); });
+document.getElementById('cal-next').addEventListener('click', () => { const d = new Date(calYear, calMonth+1, 1); calYear=d.getFullYear(); calMonth=d.getMonth(); renderCalendar(); });
+document.getElementById('cal-today').addEventListener('click', () => { const t = new Date(); calYear=t.getFullYear(); calMonth=t.getMonth(); renderCalendar(); });
 </script>
 </body>
 </html>

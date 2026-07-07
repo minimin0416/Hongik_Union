@@ -2,45 +2,44 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('조직도')}"></head>
 <body class="min-h-screen" style="background:#e8e8e8">
-<div th:replace="~{fragments/loader :: loader}"></div>
 <div th:replace="~{fragments/nav :: nav}"></div>
 <div th:replace="~{fragments/subheader :: about('org')}"></div>
 <div class="page-content">
   <h2 class="text-2xl font-bold text-gray-800 mb-6">조직도</h2>
-  <div id="org-wrap"></div>
-</div>
-<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
-<script>
-const DEFAULT_ORG = `
-  <div class="flex flex-col items-center gap-4">
-    <div class="text-white px-8 py-3 rounded-xl font-bold text-center" style="background:#003087;min-width:10rem">총회</div>
-    <div class="w-0.5 h-6 bg-gray-300"></div>
-    <div class="text-white px-8 py-3 rounded-xl font-semibold text-center" style="background:#0052A5;min-width:10rem">총동아리연합회장</div>
-    <div class="w-0.5 h-6 bg-gray-300"></div>
-    <div class="flex gap-6 flex-wrap justify-center">
-      ${['부회장','총무'].map(role => `
+  <div id="org-wrap">
+    <div th:if="${not #strings.isEmpty(orgImage)}" class="flex justify-center">
+      <img th:src="${orgImage}" alt="조직도" class="max-w-full rounded-xl border border-gray-200 shadow-sm">
+    </div>
+    <div th:if="${#strings.isEmpty(orgImage)}" class="flex flex-col items-center gap-4">
+      <div class="text-white px-8 py-3 rounded-xl font-bold text-center" style="background:#003087;min-width:10rem">총회</div>
+      <div class="w-0.5 h-6 bg-gray-300"></div>
+      <div class="text-white px-8 py-3 rounded-xl font-semibold text-center" style="background:#0052A5;min-width:10rem">총동아리연합회장</div>
+      <div class="w-0.5 h-6 bg-gray-300"></div>
+      <div class="flex gap-6 flex-wrap justify-center">
         <div>
           <div class="w-0.5 h-4 bg-gray-300 mx-auto"></div>
-          <div class="bg-blue-100 border border-blue-300 px-6 py-2.5 rounded-lg font-medium text-center text-sm" style="color:#003087;min-width:8rem">${role}</div>
-        </div>`).join('')}
+          <div class="bg-blue-100 border border-blue-300 px-6 py-2.5 rounded-lg font-medium text-center text-sm" style="color:#003087;min-width:8rem">부회장</div>
+        </div>
+        <div>
+          <div class="w-0.5 h-4 bg-gray-300 mx-auto"></div>
+          <div class="bg-blue-100 border border-blue-300 px-6 py-2.5 rounded-lg font-medium text-center text-sm" style="color:#003087;min-width:8rem">총무</div>
+        </div>
+      </div>
+      <div class="w-0.5 h-6 bg-gray-300"></div>
+      <p class="text-sm text-gray-500 mb-2">각 분과 대표</p>
+      <div class="flex gap-3 flex-wrap justify-center">
+        <div class="bg-gray-100 border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm text-center">공연분과</div>
+        <div class="bg-gray-100 border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm text-center">스포츠분과</div>
+        <div class="bg-gray-100 border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm text-center">레저분과</div>
+        <div class="bg-gray-100 border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm text-center">종교분과</div>
+        <div class="bg-gray-100 border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm text-center">사회분과</div>
+        <div class="bg-gray-100 border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm text-center">학술분과</div>
+        <div class="bg-gray-100 border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm text-center">전시분과</div>
+      </div>
+      <p class="text-center text-gray-400 text-sm mt-4">※ 관리자 페이지 → 총동아리연합회 → 조직도에서 이미지 업로드 가능</p>
     </div>
-    <div class="w-0.5 h-6 bg-gray-300"></div>
-    <p class="text-sm text-gray-500 mb-2">각 분과 대표</p>
-    <div class="flex gap-3 flex-wrap justify-center">
-      ${['공연분과','스포츠분과','레저분과','종교분과','사회분과','학술분과','전시분과'].map(cat => `
-        <div class="bg-gray-100 border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm text-center">${cat}</div>`).join('')}
-    </div>
-    <p class="text-center text-gray-400 text-sm mt-4">※ 관리자 페이지 → 총동아리연합회 → 조직도에서 이미지 업로드 가능</p>
   </div>
-`;
-document.addEventListener('DOMContentLoaded', async () => {
-  await Store.initNav();
-  const img = await Store.getOrgImage();
-  document.getElementById('org-wrap').innerHTML = img
-    ? `<div class="flex justify-center"><img src="${img}" alt="조직도" class="max-w-full rounded-xl border border-gray-200 shadow-sm"></div>`
-    : DEFAULT_ORG;
-  Store.reveal();
-});
-</script>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

@@ -2,7 +2,6 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('공지사항')}"></head>
 <body class="min-h-screen" style="background:#e8e8e8">
-<div th:replace="~{fragments/loader :: loader}"></div>
 <div th:replace="~{fragments/nav :: nav}"></div>
 <div th:replace="~{fragments/subheader :: news('notices')}"></div>
 <div class="page-content">
@@ -12,11 +11,13 @@
   </div>
   <div id="notice-body"></div>
 </div>
-<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
-<script>
-let notices = [];
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:inline="javascript">
+/*<![CDATA[*/
+let notices = /*[[${notices}]]*/ [];
+/*]]>*/
 
-async function showList() {
+function showList() {
   document.getElementById('notice-body').innerHTML = `
     <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
       <table class="data-table">
@@ -92,14 +93,8 @@ async function showDetail(notice) {
   }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await Store.initNav();
-  notices = await Store.getNotices();
-  notices.forEach(n => { if (n.hasImages) Store.getNoticeImages(n.id); });
-  document.getElementById('notice-count').textContent = `총 ${notices.length}건`;
-  showList();
-  Store.reveal();
-});
+document.getElementById('notice-count').textContent = `총 ${notices.length}건`;
+showList();
 </script>
 </body>
 </html>

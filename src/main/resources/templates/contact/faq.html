@@ -2,47 +2,39 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('자주 묻는 질문')}"></head>
 <body class="min-h-screen" style="background:#e8e8e8">
-<div th:replace="~{fragments/loader :: loader}"></div>
 <div th:replace="~{fragments/nav :: nav}"></div>
 <div th:replace="~{fragments/subheader :: contact('faq')}"></div>
 <div class="page-content">
   <div class="max-w-3xl">
     <h2 class="text-2xl font-bold text-gray-800 mb-6">자주 묻는 질문</h2>
-    <div class="space-y-2" id="faq-list"></div>
+    <div class="space-y-2" id="faq-list">
+      <p th:if="${#lists.isEmpty(content.faqs)}" class="text-gray-400 text-sm text-center py-8">FAQ가 없습니다. 관리자 페이지에서 추가해주세요.</p>
+      <div th:each="faq, iter : ${content.faqs}" class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+        <button class="faq-toggle w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors" th:attr="data-i=${iter.index}">
+          <span class="font-medium text-gray-800 flex items-center gap-3">
+            <span class="w-6 h-6 rounded-full bg-gray-800 text-white text-xs flex items-center justify-center flex-shrink-0 font-bold">Q</span>
+            <span th:text="${faq.q}"></span>
+          </span>
+          <svg th:id="'faq-icon-' + ${iter.index}" class="w-5 h-5 text-gray-400 flex-shrink-0 ml-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div th:id="'faq-answer-' + ${iter.index}" class="hidden px-5 pb-4 flex gap-3">
+          <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 text-xs flex items-center justify-center flex-shrink-0 font-bold mt-0.5">A</span>
+          <p class="text-gray-600 text-sm leading-relaxed" th:text="${faq.a}"></p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
+<div th:replace="~{fragments/footer :: footer}"></div>
 <script>
-document.addEventListener('DOMContentLoaded', async () => {
-  await Store.initNav();
-  const c = await Store.getSiteContent();
-  const faqs = c.faqs || [];
-  const el = document.getElementById('faq-list');
-  el.innerHTML = faqs.length ? faqs.map((faq,i) => `
-    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
-      <button class="faq-toggle w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors" data-i="${i}">
-        <span class="font-medium text-gray-800 flex items-center gap-3">
-          <span class="w-6 h-6 rounded-full bg-gray-800 text-white text-xs flex items-center justify-center flex-shrink-0 font-bold">Q</span>
-          ${faq.q}
-        </span>
-        <svg id="faq-icon-${i}" class="w-5 h-5 text-gray-400 flex-shrink-0 ml-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-      </button>
-      <div id="faq-answer-${i}" class="hidden px-5 pb-4 flex gap-3">
-        <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 text-xs flex items-center justify-center flex-shrink-0 font-bold mt-0.5">A</span>
-        <p class="text-gray-600 text-sm leading-relaxed">${faq.a}</p>
-      </div>
-    </div>`).join('') : '<p class="text-gray-400 text-sm text-center py-8">FAQ가 없습니다. 관리자 페이지에서 추가해주세요.</p>';
-
-  document.querySelectorAll('.faq-toggle').forEach(btn => btn.addEventListener('click', () => {
-    const i = btn.dataset.i;
-    const ans = document.getElementById(`faq-answer-${i}`);
-    const icon = document.getElementById(`faq-icon-${i}`);
-    const isOpen = !ans.classList.contains('hidden');
-    ans.classList.toggle('hidden');
-    icon.style.transform = isOpen ? '' : 'rotate(180deg)';
-  }));
-  Store.reveal();
-});
+document.querySelectorAll('.faq-toggle').forEach(btn => btn.addEventListener('click', () => {
+  const i = btn.dataset.i;
+  const ans = document.getElementById(`faq-answer-${i}`);
+  const icon = document.getElementById(`faq-icon-${i}`);
+  const isOpen = !ans.classList.contains('hidden');
+  ans.classList.toggle('hidden');
+  icon.style.transform = isOpen ? '' : 'rotate(180deg)';
+}));
 </script>
 </body>
 </html>

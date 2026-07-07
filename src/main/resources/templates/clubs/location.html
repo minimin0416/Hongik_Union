@@ -2,39 +2,31 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('동아리방 위치')}"></head>
 <body class="min-h-screen" style="background:#e8e8e8">
-<div th:replace="~{fragments/loader :: loader}"></div>
 <div th:replace="~{fragments/nav :: nav}"></div>
 <div th:replace="~{fragments/subheader :: clubs('location')}"></div>
 <div class="page-content">
   <h2 class="text-2xl font-bold text-gray-800 mb-6">동아리방 위치</h2>
-  <div class="rounded-xl overflow-hidden mb-8" id="map-wrap" style="min-height:250px"></div>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="building-list"></div>
-</div>
-<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-  await Store.initNav();
-  const [img, c] = await Promise.all([Store.getClubMapImage(), Store.getSiteContent()]);
-  document.getElementById('map-wrap').innerHTML = img
-    ? `<img src="${img}" alt="캠퍼스 지도" class="w-full object-cover rounded-xl">`
-    : `<div class="bg-gray-100 flex items-center justify-center rounded-xl" style="height:250px">
-        <div class="text-center text-gray-400">
-          <svg class="w-10 h-10 mx-auto mb-2" style="color:#003087" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
-          <p class="font-semibold text-sm" style="color:#003087">캠퍼스 지도 이미지 영역</p>
-          <p class="text-gray-400 text-xs mt-1">관리자 페이지 → 동아리 소개 → 동아리방 위치에서 업로드</p>
-        </div>
-      </div>`;
-
-  const buildings = c.clubBuildings || [];
-  document.getElementById('building-list').innerHTML = buildings.map(b => `
-    <div class="bg-white border border-gray-200 rounded-xl p-5">
-      <h3 class="font-bold mb-3 text-lg" style="color:#003087">${b.building}</h3>
+  <div class="rounded-xl overflow-hidden mb-8" id="map-wrap" style="min-height:250px">
+    <img th:if="${not #strings.isEmpty(clubMapImage)}" th:src="${clubMapImage}" alt="캠퍼스 지도" class="w-full object-cover rounded-xl">
+    <div th:if="${#strings.isEmpty(clubMapImage)}" class="bg-gray-100 flex items-center justify-center rounded-xl" style="height:250px">
+      <div class="text-center text-gray-400">
+        <svg class="w-10 h-10 mx-auto mb-2" style="color:#003087" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+        <p class="font-semibold text-sm" style="color:#003087">캠퍼스 지도 이미지 영역</p>
+        <p class="text-gray-400 text-xs mt-1">관리자 페이지 → 동아리 소개 → 동아리방 위치에서 업로드</p>
+      </div>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="building-list">
+    <div th:each="b : ${content.clubBuildings}" class="bg-white border border-gray-200 rounded-xl p-5">
+      <h3 class="font-bold mb-3 text-lg" style="color:#003087" th:text="${b.building}"></h3>
       <ul class="space-y-1.5">
-        ${b.clubs.map(club => `<li class="flex items-center gap-2 text-sm text-gray-600"><span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:#003087"></span>${club}</li>`).join('')}
+        <li th:each="club : ${b.clubs}" class="flex items-center gap-2 text-sm text-gray-600">
+          <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:#003087"></span><span th:text="${club}"></span>
+        </li>
       </ul>
-    </div>`).join('');
-  Store.reveal();
-});
-</script>
+    </div>
+  </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

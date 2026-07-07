@@ -2,7 +2,6 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('가동아리')}"></head>
 <body class="min-h-screen" style="background:#e8e8e8">
-<div th:replace="~{fragments/loader :: loader}"></div>
 <div th:replace="~{fragments/nav :: nav}"></div>
 <div th:replace="~{fragments/subheader :: clubs('provisional')}"></div>
 <div class="page-content">
@@ -19,10 +18,14 @@
     <p class="text-sm" id="empty-desc"></p>
   </div>
 </div>
-<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
-<script>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:inline="javascript">
+/*<![CDATA[*/
+let allClubs = /*[[${clubs}]]*/ [];
+/*]]>*/
+
 const CATEGORIES = ['전체','공연분과','스포츠분과','레저분과','종교분과','사회분과','학술분과','전시분과'];
-let allClubs = [], selectedCategory = new URLSearchParams(location.search).get('category') || '전체';
+let selectedCategory = new URLSearchParams(location.search).get('category') || '전체';
 
 function renderTabs() {
   document.getElementById('category-tabs').innerHTML = CATEGORIES.map(cat => `
@@ -80,13 +83,8 @@ function render() {
   Store.initScrollReveal();
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await Store.initNav();
-  allClubs = await Store.getProvisionalClubs();
-  document.getElementById('search-input').addEventListener('input', render);
-  render();
-  Store.reveal();
-});
+document.getElementById('search-input').addEventListener('input', render);
+render();
 </script>
 </body>
 </html>

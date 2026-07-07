@@ -2,16 +2,17 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('동아리 소식')}"></head>
 <body class="min-h-screen" style="background:#e8e8e8">
-<div th:replace="~{fragments/loader :: loader}"></div>
 <div th:replace="~{fragments/nav :: nav}"></div>
 <div th:replace="~{fragments/subheader :: news('clubs')}"></div>
 <div class="page-content">
   <h2 class="text-2xl font-bold text-gray-800 mb-6">동아리 소식</h2>
   <div id="club-news-body"></div>
 </div>
-<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
-<script>
-let clubNewsList = [];
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:inline="javascript">
+/*<![CDATA[*/
+let clubNewsList = /*[[${clubNews}]]*/ [];
+/*]]>*/
 
 function showList() {
   document.getElementById('club-news-body').innerHTML = `
@@ -52,12 +53,7 @@ function showDetail(n) {
   document.getElementById('back-btn').addEventListener('click', showList);
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await Store.initNav();
-  clubNewsList = await Store.getClubNews();
-  showList();
-  Store.reveal();
-});
+showList();
 </script>
 </body>
 </html>

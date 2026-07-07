@@ -2,7 +2,6 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('메인')}"></head>
 <body class="min-h-screen" style="background:#e8e8e8">
-<div th:replace="~{fragments/loader :: loader}"></div>
 <div th:replace="~{fragments/nav :: nav}"></div>
 
 <!-- Hero 배너 슬라이더 -->
@@ -28,7 +27,16 @@
   <!-- 공지사항 -->
   <div class="sr-base" data-sr="fade-left" data-sr-delay="100">
     <h2 class="text-sm font-semibold text-gray-700 mb-2">공지사항</h2>
-    <div class="bg-white rounded shadow-sm overflow-hidden" style="min-height:220px" id="notice-list"></div>
+    <div class="bg-white rounded shadow-sm overflow-hidden" style="min-height:220px" id="notice-list">
+      <div th:if="${#lists.isEmpty(notices)}" class="p-6 text-center text-gray-400 text-sm">공지사항이 없습니다</div>
+      <a th:each="n, iter : ${notices}" href="/news/notices"
+         class="flex items-center gap-2 px-4 py-3 text-sm hover:bg-gray-50 transition-colors"
+         th:classappend="${!iter.last} ? 'border-b border-gray-100' : ''">
+        <span th:if="${n.isPinned}" class="text-xs bg-blue-100 text-blue-700 px-1 py-0.5 rounded font-bold flex-shrink-0">고정</span>
+        <span class="flex-1 text-gray-700 truncate" th:text="${n.title}"></span>
+        <span class="text-xs text-gray-400 flex-shrink-0" th:text="${n.createdAt}"></span>
+      </a>
+    </div>
   </div>
 </div>
 
@@ -36,16 +44,23 @@
 <div class="sr-base max-w-5xl mx-auto px-6 pb-10" data-sr="fade-up" data-sr-delay="0">
   <h2 class="text-sm font-semibold text-gray-700 mb-2">총동아리연합회실(G301-1) 오시는 길</h2>
   <div class="bg-white rounded shadow-sm overflow-hidden" style="height:200px" id="location-wrap">
-    <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">
+    <img th:if="${not #strings.isEmpty(locationImage)}" th:src="${locationImage}" alt="오시는 길" class="w-full h-full object-contain">
+    <div th:if="${#strings.isEmpty(locationImage)}" class="w-full h-full flex items-center justify-center text-gray-400 text-sm">
       <div class="text-center"><p>지도 이미지를 업로드해주세요</p><a href="/about/location" class="text-blue-500 text-xs hover:underline mt-1 block">오시는 길 자세히 보기 →</a></div>
     </div>
   </div>
   <a href="/about/location" class="text-xs text-gray-400 hover:text-gray-600 mt-1 block text-right">오시는 길 자세히 보기 →</a>
 </div>
 
-<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
+<div th:replace="~{fragments/footer :: footer}"></div>
 
-<script>
+<script th:inline="javascript">
+/*<![CDATA[*/
+const BANNER_SLIDES = /*[[${content.bannerSlides}]]*/ [];
+const BANNER_IMAGES = /*[[${bannerImages}]]*/ [];
+const CALENDAR_EVENTS = /*[[${calendarEvents}]]*/ [];
+/*]]>*/
+
 const DAY_NAMES = ['일','월','화','수','목','금','토'];
 function toDateStr(y,m,d){ return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
 
@@ -102,61 +117,37 @@ function renderCalendar(events, year, month) {
   };
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await Store.initNav();
-  const [notices, slides, bannerImgs, events, locationImg] = await Promise.all([
-    Store.getNotices(), Store.getSiteContent().then(c=>c.bannerSlides),
-    Store.getBanners(), Store.getCalendarEvents(), Store.getLocationImage()
-  ]);
+// 배너
+let cur = 0;
+const slideCount = Math.max(BANNER_SLIDES.length, BANNER_IMAGES.length) || 3;
+const dots = document.getElementById('banner-dots');
+dots.innerHTML = Array.from({length:slideCount},(_,i)=>`<button class="banner-dot w-2 h-2 rounded-full transition-all ${i===0?'bg-white':'bg-white/40'}"></button>`).join('');
+dots.querySelectorAll('.banner-dot').forEach((btn,i)=>btn.addEventListener('click',()=>showSlide(i)));
 
-  // 배너
-  let cur = 0;
-  const slideCount = Math.max(slides.length, bannerImgs.length) || 3;
-  const dots = document.getElementById('banner-dots');
-  dots.innerHTML = Array.from({length:slideCount},(_,i)=>`<button class="banner-dot w-2 h-2 rounded-full transition-all ${i===0?'bg-white':'bg-white/40'}"></button>`).join('');
-  dots.querySelectorAll('.banner-dot').forEach((btn,i)=>btn.addEventListener('click',()=>showSlide(i)));
+function showSlide(i) {
+  cur = i;
+  const img = BANNER_IMAGES[i]||'';
+  const slide = BANNER_SLIDES[i];
+  const bannerImg = document.getElementById('banner-img');
+  const bannerBg = document.getElementById('banner-bg');
+  const bannerText = document.getElementById('banner-text');
+  if(img){ bannerImg.src=img; bannerImg.classList.remove('hidden'); bannerBg.style.display='none'; }
+  else { bannerImg.classList.add('hidden'); bannerBg.style.display=''; }
+  if(slide&&(slide.title||slide.subtitle)){
+    document.getElementById('banner-title').textContent=slide.title||'';
+    document.getElementById('banner-subtitle').textContent=slide.subtitle||'';
+    bannerText.style.display='flex';
+  } else { bannerText.style.display='none'; }
+  dots.querySelectorAll('.banner-dot').forEach((d,di)=>d.className=`banner-dot w-2 h-2 rounded-full transition-all ${di===cur?'bg-white':'bg-white/40'}`);
+}
+showSlide(0);
+document.getElementById('prev-btn').onclick=()=>showSlide((cur-1+slideCount)%slideCount);
+document.getElementById('next-btn').onclick=()=>showSlide((cur+1)%slideCount);
+setInterval(()=>showSlide((cur+1)%slideCount), 5000);
 
-  function showSlide(i) {
-    cur = i;
-    const img = bannerImgs[i]||'';
-    const slide = slides[i];
-    const bannerImg = document.getElementById('banner-img');
-    const bannerBg = document.getElementById('banner-bg');
-    const bannerText = document.getElementById('banner-text');
-    if(img){ bannerImg.src=img; bannerImg.classList.remove('hidden'); bannerBg.style.display='none'; }
-    else { bannerImg.classList.add('hidden'); bannerBg.style.display=''; }
-    if(slide&&(slide.title||slide.subtitle)){
-      document.getElementById('banner-title').textContent=slide.title||'';
-      document.getElementById('banner-subtitle').textContent=slide.subtitle||'';
-      bannerText.style.display='flex';
-    } else { bannerText.style.display='none'; }
-    dots.querySelectorAll('.banner-dot').forEach((d,di)=>d.className=`banner-dot w-2 h-2 rounded-full transition-all ${di===cur?'bg-white':'bg-white/40'}`);
-  }
-  showSlide(0);
-  document.getElementById('prev-btn').onclick=()=>showSlide((cur-1+slideCount)%slideCount);
-  document.getElementById('next-btn').onclick=()=>showSlide((cur+1)%slideCount);
-  setInterval(()=>showSlide((cur+1)%slideCount), 5000);
-
-  // 공지사항
-  const nl = document.getElementById('notice-list');
-  nl.innerHTML = notices.length ? notices.map((n,i)=>`
-    <a href="/news/notices" class="flex items-center gap-2 px-4 py-3 text-sm hover:bg-gray-50 transition-colors ${i<notices.length-1?'border-b border-gray-100':''}">
-      ${n.isPinned?'<span class="text-xs bg-blue-100 text-blue-700 px-1 py-0.5 rounded font-bold flex-shrink-0">고정</span>':''}
-      <span class="flex-1 text-gray-700 truncate">${n.title}</span>
-      <span class="text-xs text-gray-400 flex-shrink-0">${n.createdAt}</span>
-    </a>`).join('') : '<div class="p-6 text-center text-gray-400 text-sm">공지사항이 없습니다</div>';
-
-  // 달력
-  const now = new Date();
-  renderCalendar(events, now.getFullYear(), now.getMonth());
-
-  // 오시는 길
-  if(locationImg){
-    const lw = document.getElementById('location-wrap');
-    lw.innerHTML = `<img src="${locationImg}" alt="오시는 길" class="w-full h-full object-contain">`;
-  }
-  Store.reveal();
-});
+// 달력
+const now = new Date();
+renderCalendar(CALENDAR_EVENTS, now.getFullYear(), now.getMonth());
 </script>
 </body>
 </html>

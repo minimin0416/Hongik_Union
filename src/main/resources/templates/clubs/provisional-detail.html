@@ -2,14 +2,17 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('가동아리 소개')}"></head>
 <body class="min-h-screen" style="background:#e8e8e8">
-<div th:replace="~{fragments/loader :: loader}"></div>
 <div th:replace="~{fragments/nav :: nav}"></div>
 <div th:replace="~{fragments/subheader :: clubs('provisional')}"></div>
 <div class="page-content">
   <div id="club-detail" class="max-w-3xl mx-auto"></div>
 </div>
-<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
-<script>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:inline="javascript">
+/*<![CDATA[*/
+const club = /*[[${club}]]*/ null;
+/*]]>*/
+
 function renderClub(club) {
   const infoRows = [
     { label:'회장', value:club.president },
@@ -89,14 +92,7 @@ function renderNotFound() {
     </div>`;
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await Store.initNav();
-  const id = Number(location.pathname.split('/').pop());
-  const clubs = await Store.getProvisionalClubs();
-  const club = clubs.find(c => c.id === id);
-  if (club) renderClub(club); else renderNotFound();
-  Store.reveal();
-});
+if (club) renderClub(club); else renderNotFound();
 </script>
 </body>
 </html>

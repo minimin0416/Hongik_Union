@@ -2,50 +2,44 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('오시는 길')}"></head>
 <body class="min-h-screen" style="background:#e8e8e8">
-<div th:replace="~{fragments/loader :: loader}"></div>
 <div th:replace="~{fragments/nav :: nav}"></div>
 <div th:replace="~{fragments/subheader :: about('location')}"></div>
 <div class="page-content">
   <div class="max-w-3xl">
     <h2 class="text-2xl font-bold text-gray-800 mb-6">오시는 길</h2>
-    <div class="rounded-xl overflow-hidden mb-6" id="map-wrap" style="min-height:280px"></div>
-    <div class="bg-white border border-gray-200 rounded-xl p-6">
-      <h3 class="font-semibold text-gray-800 mb-4">위치 정보</h3>
-      <ul class="space-y-3" id="info-list"></ul>
-    </div>
-  </div>
-</div>
-<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-  await Store.initNav();
-  const [img, c] = await Promise.all([Store.getLocationImage(), Store.getSiteContent()]);
-  document.getElementById('map-wrap').innerHTML = img
-    ? `<img src="${img}" alt="오시는 길 지도" class="w-full object-cover rounded-xl">`
-    : `<div class="bg-gray-100 flex items-center justify-center rounded-xl" style="height:280px">
+    <div class="rounded-xl overflow-hidden mb-6" id="map-wrap" style="min-height:280px">
+      <img th:if="${not #strings.isEmpty(locationImage)}" th:src="${locationImage}" alt="오시는 길 지도" class="w-full object-cover rounded-xl">
+      <div th:if="${#strings.isEmpty(locationImage)}" class="bg-gray-100 flex items-center justify-center rounded-xl" style="height:280px">
         <div class="text-center text-gray-400">
           <svg class="w-12 h-12 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
           <p class="text-sm">지도 이미지</p>
           <p class="text-xs mt-1">관리자 페이지 → 총동아리연합회 → 오시는 길에서 업로드</p>
         </div>
-      </div>`;
-
-  const items = [
-    { icon:'📍', label:'주소', value:c.locationAddress },
-    { icon:'🕐', label:'운영시간', value:c.locationHours },
-    { icon:'📞', label:'연락처', value:c.locationPhone },
-    { icon:'✉️', label:'이메일', value:c.locationEmail },
-  ];
-  document.getElementById('info-list').innerHTML = items.map(item => `
-    <li class="flex items-start gap-3">
-      <span class="text-xl flex-shrink-0">${item.icon}</span>
-      <div>
-        <span class="text-xs text-gray-500 block">${item.label}</span>
-        <span class="text-gray-800 font-medium">${item.value || '-'}</span>
       </div>
-    </li>`).join('');
-  Store.reveal();
-});
-</script>
+    </div>
+    <div class="bg-white border border-gray-200 rounded-xl p-6">
+      <h3 class="font-semibold text-gray-800 mb-4">위치 정보</h3>
+      <ul class="space-y-3" id="info-list">
+        <li class="flex items-start gap-3">
+          <span class="text-xl flex-shrink-0">📍</span>
+          <div><span class="text-xs text-gray-500 block">주소</span><span class="text-gray-800 font-medium" th:text="${content.locationAddress}"></span></div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl flex-shrink-0">🕐</span>
+          <div><span class="text-xs text-gray-500 block">운영시간</span><span class="text-gray-800 font-medium" th:text="${content.locationHours}"></span></div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl flex-shrink-0">📞</span>
+          <div><span class="text-xs text-gray-500 block">연락처</span><span class="text-gray-800 font-medium" th:text="${content.locationPhone}"></span></div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl flex-shrink-0">✉️</span>
+          <div><span class="text-xs text-gray-500 block">이메일</span><span class="text-gray-800 font-medium" th:text="${content.locationEmail}"></span></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

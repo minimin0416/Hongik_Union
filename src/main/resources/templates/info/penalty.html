@@ -2,7 +2,6 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('벌점 현황')}"></head>
 <body class="min-h-screen" style="background:#e8e8e8">
-<div th:replace="~{fragments/loader :: loader}"></div>
 <div th:replace="~{fragments/nav :: nav}"></div>
 <div th:replace="~{fragments/subheader :: info('penalty')}"></div>
 <div class="page-content">
@@ -10,26 +9,19 @@
   <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
     <table class="data-table">
       <thead><tr><th>동아리</th><th>사유</th><th class="w-16 text-center">점수</th><th class="w-28 text-center hidden md:table-cell">날짜</th></tr></thead>
-      <tbody id="penalty-rows"></tbody>
+      <tbody id="penalty-rows">
+        <tr th:if="${#lists.isEmpty(penalties)}"><td colspan="4" class="text-center text-gray-400 py-10">벌점 내역이 없습니다</td></tr>
+        <tr th:each="p : ${penalties}">
+          <td class="font-medium text-gray-800" th:text="${p.club}"></td>
+          <td class="text-gray-600 text-sm" th:text="${p.reason}"></td>
+          <td class="text-center font-bold text-red-500" th:text="'+' + ${p.points}"></td>
+          <td class="text-center text-gray-400 text-xs hidden md:table-cell" th:text="${p.date}"></td>
+        </tr>
+      </tbody>
     </table>
   </div>
   <p class="text-gray-400 text-xs mt-4">※ 이의신청은 총동아리연합회실(G301-1)로 문의하세요.</p>
 </div>
-<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-  await Store.initNav();
-  const list = await Store.getPenalties();
-  const rows = document.getElementById('penalty-rows');
-  rows.innerHTML = list.length ? list.map(p => `
-    <tr>
-      <td class="font-medium text-gray-800">${p.club}</td>
-      <td class="text-gray-600 text-sm">${p.reason}</td>
-      <td class="text-center font-bold text-red-500">+${p.points}</td>
-      <td class="text-center text-gray-400 text-xs hidden md:table-cell">${p.date}</td>
-    </tr>`).join('') : '<tr><td colspan="4" class="text-center text-gray-400 py-10">벌점 내역이 없습니다</td></tr>';
-  Store.reveal();
-});
-</script>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

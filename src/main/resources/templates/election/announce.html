@@ -2,17 +2,19 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('선거 공고')}"></head>
 <body class="min-h-screen" style="background:#e8e8e8">
-<div th:replace="~{fragments/loader :: loader}"></div>
 <div th:replace="~{fragments/nav :: nav}"></div>
 <div th:replace="~{fragments/subheader :: election('announce')}"></div>
 <div class="page-content">
   <h2 class="text-2xl font-bold text-gray-800 mb-6">공고</h2>
   <div id="announce-body"></div>
 </div>
-<footer id="site-footer" class="bg-white border-t border-gray-200 mt-4"></footer>
-<script>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:inline="javascript">
+/*<![CDATA[*/
+let announcements = /*[[${announcements}]]*/ [];
+/*]]>*/
+
 const STATUS_COLOR = { '예정':'bg-blue-100 text-blue-700', '진행중':'bg-green-100 text-green-700', '완료':'bg-gray-100 text-gray-500' };
-let announcements = [];
 
 function showList() {
   document.getElementById('announce-body').innerHTML = `
@@ -48,12 +50,7 @@ function showDetail(a) {
   if (a.attachment) document.getElementById('att-dl').addEventListener('click', () => Store.downloadFile(a.attachment.url, a.attachment.name));
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await Store.initNav();
-  announcements = await Store.getElection();
-  showList();
-  Store.reveal();
-});
+showList();
 </script>
 </body>
 </html>
